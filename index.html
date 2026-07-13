@@ -116,8 +116,8 @@ header.app{
 }
 header.app h1{font-size:20px; display:flex; align-items:center; gap:9px; flex:1 1 auto; min-width:0; white-space:nowrap; overflow:hidden;}
 header.app h1 .ttl{min-width:0; overflow:hidden; text-overflow:ellipsis;}
-.applogo{width:32px; height:32px; border-radius:10px; flex:none; filter:drop-shadow(0 3px 10px color-mix(in srgb, var(--a2) 40%, transparent));}
-.oblogo{width:74px; height:74px; border-radius:20px; filter:drop-shadow(0 6px 20px color-mix(in srgb, var(--a2) 45%, transparent));}
+.applogo{width:32px; height:32px; border-radius:10px; flex:none;}
+.oblogo{width:74px; height:74px; border-radius:20px;}
 .tagline{font-size:15px; font-weight:700; margin-bottom:6px;
   background:linear-gradient(120deg,var(--a1),var(--a2));
   -webkit-background-clip:text; background-clip:text; color:transparent;}
@@ -422,6 +422,44 @@ nav.tabs button.on{
 .timerbox .tname{color:var(--muted); font-weight:600; margin-bottom:4px;}
 .timerbox .tacts{display:flex; gap:10px; margin-top:18px;}
 .timerbox .tacts .btn{flex:1; padding:14px;}
+.metro{margin-top:22px; padding-top:18px; border-top:1px solid var(--line);}
+.metro .mlabel{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+.metro .mlabel span{font-size:12.5px; font-weight:800; color:var(--muted); letter-spacing:.6px; text-transform:uppercase;}
+.metro .mbpm{font-family:"Sora",sans-serif; font-weight:800; font-size:26px; letter-spacing:-.5px;}
+.metro .mbpm em{font-style:normal; font-size:13px; font-weight:600; color:var(--muted); margin-left:3px;}
+.metro .mrow{display:flex; align-items:center; gap:10px;}
+.metro .mstep{
+  width:46px; height:46px; border-radius:14px; flex:none; font-size:22px; font-weight:700;
+  background:var(--tint); color:var(--ontint);
+  border:1px solid color-mix(in srgb, var(--a2) 25%, transparent);
+  transition:transform .12s ease;
+}
+.metro .mstep:active{transform:scale(.92);}
+.metro input[type=range]{
+  flex:1; -webkit-appearance:none; appearance:none; height:8px; border-radius:999px; padding:0;
+  background:linear-gradient(90deg,var(--a1),var(--a2)); border:none;
+}
+.metro input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none; width:26px; height:26px; border-radius:50%;
+  background:var(--knob); border:2px solid var(--a2); cursor:pointer;
+  box-shadow:0 3px 10px color-mix(in srgb, var(--a2) 45%, transparent);
+}
+.metro input[type=range]::-moz-range-thumb{
+  width:24px; height:24px; border-radius:50%; background:var(--knob);
+  border:2px solid var(--a2); cursor:pointer;
+}
+.metro .mplay{
+  width:100%; margin-top:14px; padding:13px; border-radius:15px; font-size:15px; font-weight:700;
+}
+.metro .mplay.on{
+  background:var(--good); color:#fff; border:1px solid rgba(255,255,255,.35);
+  box-shadow:0 6px 18px color-mix(in srgb, var(--good) 45%, transparent);
+}
+.metro .beat{
+  display:inline-block; width:9px; height:9px; border-radius:50%; margin-left:8px; vertical-align:1px;
+  background:var(--faint); transition:transform .05s ease, background .05s ease;
+}
+.metro .beat.flash{background:var(--a2); transform:scale(1.5);}
 
 .toast{
   position:fixed; left:50%; transform:translateX(-50%) translateY(20px);
@@ -451,15 +489,18 @@ nav.tabs button.on{
   position:relative; width:100%; height:52px; border-radius:12px; overflow:hidden;
   border:1px solid var(--line); display:block;
 }
-.appprev i{position:absolute; left:9px; height:4px; border-radius:2px; background:#B7BCCB;}
+.appprev i{position:absolute; left:9px; height:4px; border-radius:2px; background:#B7BCCB; z-index:1;}
 .appprev i:nth-child(1){top:11px; width:54%;}
 .appprev i:nth-child(2){top:20px; width:38%;}
-.appprev b{position:absolute; right:9px; bottom:9px; width:13px; height:13px; border-radius:50%; background:#C97B5A;}
+.appprev b{position:absolute; right:9px; bottom:9px; width:13px; height:13px; border-radius:50%; background:#C97B5A; z-index:1;}
 .appprev-light{background:#F4F5FA;}
 .appprev-dark{background:#23252F;}
 .appprev-dark i{background:#6D7180;}
-.appprev-system{background:linear-gradient(135deg,#F4F5FA 0 50%,#23252F 50% 100%);}
-.appprev-system i:nth-child(1){background:linear-gradient(90deg,#B7BCCB 0 60%,#6D7180 60% 100%);}
+.appprev-system{background:#F4F5FA;}
+.appprev-system::after{content:""; position:absolute; inset:0;
+  background:#23252F; clip-path:polygon(100% 0, 100% 100%, 0 100%);}
+.appprev-system i, .appprev-system b{z-index:1;}
+.appprev-system i{background:#B7BCCB;}
 .applabel{font-size:12.5px; font-weight:700; color:var(--muted);}
 .appcard.on .applabel{color:var(--ink);}
 .bic{display:inline-block; width:19px; height:19px; vertical-align:-4px; margin-right:9px; background:currentColor;
@@ -1458,6 +1499,7 @@ function openSheet(html){
 }
 function closeSheet(){
   if (sheetState.tick) { clearInterval(sheetState.tick); sheetState.tick = null; }
+  if (typeof stopMetro === "function") stopMetro();
   document.getElementById("scrim").classList.remove("open");
 }
 function toast(msg){
@@ -1806,9 +1848,15 @@ function saveExtra(startTimer){
   if (startTimer) openTimer(id);
 }
 function removeExtra(id){
-  if (!confirm("Remove this extra practice from today? Any minutes you already logged for it stay in your history.")) return;
+  if (!confirm("Remove this extra practice from today? Its logged minutes for today will be removed too.")) return;
+  /* remove the extra itself */
   for (var i = 0; i < state.extras.length; i++){
     if (state.extras[i].id === id){ state.extras.splice(i, 1); break; }
+  }
+  /* and remove any sessions logged for it today, so today's total goes back down */
+  var t = todayKey();
+  for (var j = state.sessions.length - 1; j >= 0; j--){
+    if (state.sessions[j].itemId === id && state.sessions[j].date === t) state.sessions.splice(j, 1);
   }
   save(); closeSheet && closeSheet(); render();
 }
@@ -1893,6 +1941,91 @@ function deleteCategory(id){
 }
 
 /* Timer */
+/* ============================================================
+   METRONOME (BPM only, one continuous click, no accents)
+   ============================================================ */
+var metroBpm = 90;
+var metroOn = false;
+var metroCtx = null;
+var metroNext = 0;      /* next click time in audio-clock seconds */
+var metroTimer = null;  /* scheduler interval */
+function metroEnsureCtx(){
+  if (!metroCtx){
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    metroCtx = new AC();
+  }
+  if (metroCtx.state === "suspended") metroCtx.resume();
+  return metroCtx;
+}
+function metroClick(at){
+  /* a short, plain wood-block-ish click; identical every beat (no accents) */
+  var o = metroCtx.createOscillator();
+  var g = metroCtx.createGain();
+  o.type = "square";
+  o.frequency.value = 1000;
+  g.gain.setValueAtTime(0.0001, at);
+  g.gain.exponentialRampToValueAtTime(0.6, at + 0.001);
+  g.gain.exponentialRampToValueAtTime(0.0001, at + 0.03);
+  o.connect(g); g.connect(metroCtx.destination);
+  o.start(at); o.stop(at + 0.04);
+  /* flash the beat dot roughly in sync */
+  var delay = Math.max(0, (at - metroCtx.currentTime) * 1000);
+  setTimeout(flashBeat, delay);
+}
+function flashBeat(){
+  var d = document.getElementById("mBeat");
+  if (!d) return;
+  d.classList.add("flash");
+  setTimeout(function () { if (d) d.classList.remove("flash"); }, 70);
+}
+function metroSchedule(){
+  if (!metroOn || !metroCtx) return;
+  var spb = 60 / metroBpm; /* seconds per beat */
+  /* schedule any clicks due in the next 150ms window */
+  while (metroNext < metroCtx.currentTime + 0.15){
+    metroClick(metroNext);
+    metroNext += spb;
+  }
+}
+function startMetro(){
+  var ctx = metroEnsureCtx();
+  if (!ctx){ toast("Sound is not available on this browser"); return; }
+  metroOn = true;
+  metroNext = ctx.currentTime + 0.06;
+  metroSchedule();
+  clearInterval(metroTimer);
+  metroTimer = setInterval(metroSchedule, 25);
+}
+function stopMetro(){
+  metroOn = false;
+  clearInterval(metroTimer); metroTimer = null;
+}
+function toggleMetro(){
+  if (metroOn) stopMetro(); else startMetro();
+  var b = document.getElementById("mPlay");
+  if (b){
+    b.classList.toggle("on", metroOn);
+    b.innerHTML = metroOn ? "&#9632; Stop" : "&#9654; Start metronome";
+  }
+}
+function setBpm(v){
+  var n = parseInt(v, 10);
+  if (isNaN(n)) return;
+  if (n < 40) n = 40; if (n > 240) n = 240;
+  metroBpm = n;
+  var val = document.getElementById("mBpmVal");
+  if (val) val.innerHTML = n + '<em>bpm</em>';
+  var sl = document.getElementById("mBpm");
+  if (sl && String(sl.value) !== String(n)) sl.value = n;
+}
+function stepBpm(d){
+  setBpm(metroBpm + d);
+}
+function closeTimer(){
+  stopMetro();
+  closeSheet();
+}
 function renderTimerSheet(){
   var html = '<div class="timerbox">'
     + '<p class="tname">' + esc(sheetState.itemName) + ' \u00B7 target ' + sheetState.itemMin + 'm</p>'
@@ -1901,7 +2034,17 @@ function renderTimerSheet(){
     + '<button class="btn" id="tmToggle" onclick="toggleTimer()">' + (sheetState.running ? "Pause" : (sheetState.sec ? "Resume" : "Start")) + '</button>'
     + '<button class="btn grad" onclick="finishTimer()">Finish and log</button>'
     + '</div>'
-    + '<button class="btn ghost wide" style="margin-top:12px" onclick="closeSheet()">Cancel</button>'
+    + '<div class="metro">'
+    + '<div class="mlabel"><span>Metronome <i class="beat" id="mBeat"></i></span>'
+    + '<span class="mbpm" id="mBpmVal">' + metroBpm + '<em>bpm</em></span></div>'
+    + '<div class="mrow">'
+    + '<button class="mstep" type="button" onclick="stepBpm(-5)" aria-label="Slower">&#8722;</button>'
+    + '<input type="range" id="mBpm" min="40" max="240" step="1" value="' + metroBpm + '" oninput="setBpm(this.value)">'
+    + '<button class="mstep" type="button" onclick="stepBpm(5)" aria-label="Faster">+</button>'
+    + '</div>'
+    + '<button class="btn mplay' + (metroOn ? ' on' : '') + '" id="mPlay" type="button" onclick="toggleMetro()">' + (metroOn ? '&#9632; Stop' : '&#9654; Start metronome') + '</button>'
+    + '</div>'
+    + '<button class="btn ghost wide" style="margin-top:16px" onclick="closeTimer()">Cancel</button>'
     + '</div>';
   openSheet(html);
   paintTimer();
@@ -1909,6 +2052,7 @@ function renderTimerSheet(){
 function openTimer(itemId){
   var it = findWorkItem(itemId);
   if (!it) return;
+  stopMetro(); /* start each session with the metronome off */
   sheetState = { kind: "timer", itemId: it.id, itemName: it.name, itemMin: it.min, sec: 0, running: false, done: false, tick: null };
   renderTimerSheet();
 }
@@ -1954,7 +2098,17 @@ function timerCelebrate(){
     + '<button class="btn grad" id="tmLog" onclick="finishTimer()">Log ' + sheetState.itemMin + ' min</button>'
     + '<button class="btn" onclick="keepGoing()">Keep practicing</button>'
     + '</div>'
-    + '<button class="btn ghost wide" style="margin-top:12px" onclick="closeSheet()">Cancel</button>'
+    + '<div class="metro">'
+    + '<div class="mlabel"><span>Metronome <i class="beat" id="mBeat"></i></span>'
+    + '<span class="mbpm" id="mBpmVal">' + metroBpm + '<em>bpm</em></span></div>'
+    + '<div class="mrow">'
+    + '<button class="mstep" type="button" onclick="stepBpm(-5)" aria-label="Slower">&#8722;</button>'
+    + '<input type="range" id="mBpm" min="40" max="240" step="1" value="' + metroBpm + '" oninput="setBpm(this.value)">'
+    + '<button class="mstep" type="button" onclick="stepBpm(5)" aria-label="Faster">+</button>'
+    + '</div>'
+    + '<button class="btn mplay' + (metroOn ? ' on' : '') + '" id="mPlay" type="button" onclick="toggleMetro()">' + (metroOn ? '&#9632; Stop' : '&#9654; Start metronome') + '</button>'
+    + '</div>'
+    + '<button class="btn ghost wide" style="margin-top:16px" onclick="closeTimer()">Cancel</button>'
     + '</div>';
   openSheet(html);
 }
@@ -1965,6 +2119,7 @@ function keepGoing(){
 }
 function finishTimer(){
   if (sheetState.tick){ clearInterval(sheetState.tick); sheetState.tick = null; }
+  stopMetro();
   var mins = Math.max(1, Math.round(sheetState.sec / 60));
   var itemId = sheetState.itemId;
   closeSheet();
