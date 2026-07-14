@@ -549,13 +549,13 @@ nav.tabs button.on{
   .hero .big{font-size:40px;}
   .cols{display:grid; grid-template-columns:1fr 1fr; column-gap:18px; align-items:start; grid-template-areas:"a b" "c b";}
   .cols .ga{grid-area:a;} .cols .gb{grid-area:b;} .cols .gc{grid-area:c;}
-  .masonry{column-count:2; column-gap:18px;}
-  .masonry > .card, .masonry > .tiles{break-inside:avoid; page-break-inside:avoid; -webkit-column-break-inside:avoid;}
+  .masonry{display:flex; gap:18px; align-items:flex-start;}
+  .masonry .mcol{flex:1; min-width:0; display:flex; flex-direction:column;}
   .sheet{max-width:720px;}
 }
 @media (min-width:1200px){
   .cols{column-gap:24px;}
-  .masonry{column-gap:24px;}
+  .masonry{gap:24px;}
 }
 
 /* ---- Onboarding ---- */
@@ -1221,6 +1221,21 @@ function renderPlan(){
   el.innerHTML = html;
   attachSwipes(el);
 }
+function splitMasonryDom(el){
+  var m = el.querySelector('.masonry');
+  if (!m) return;
+  var kids = [];
+  for (var i = 0; i < m.children.length; i++) kids.push(m.children[i]);
+  if (kids.length < 2) return;
+  var c1 = document.createElement('div'); c1.className = 'mcol';
+  var c2 = document.createElement('div'); c2.className = 'mcol';
+  /* simple balanced split: alternate, but keep the tiles/first card in column 1 */
+  for (var k = 0; k < kids.length; k++){
+    (k % 2 === 0 ? c1 : c2).appendChild(kids[k]);
+  }
+  m.innerHTML = '';
+  m.appendChild(c1); m.appendChild(c2);
+}
 function renderStats(){
   var el = document.getElementById("view-stats");
   var dm = sumByDay(state.sessions);
@@ -1276,6 +1291,7 @@ function renderStats(){
   html += '</div></div>';
   html += '</div>';
   el.innerHTML = html;
+  if (window.matchMedia && window.matchMedia('(min-width:760px)').matches) splitMasonryDom(el);
 }
 function appCard(mode, label, on){
   return '<button class="appcard ' + (on ? "on" : "") + '" type="button" onclick="setAppearance(\'' + mode + '\')">'
@@ -1366,6 +1382,7 @@ function renderMore(){
   html += '</div>';
   html += '</div>';
   el.innerHTML = html;
+  if (window.matchMedia && window.matchMedia('(min-width:760px)').matches) splitMasonryDom(el);
   attachSwipes(el);
 }
 function toggleHist(){
@@ -2146,7 +2163,15 @@ function keepGoing(){
 function finishTimer(){
   if (sheetState.tick){ clearInterval(sheetState.tick); sheetState.tick = null; }
   stopMetro();
-  var mins = Math.max(1, Math.round(sheetState.sec / 60));
+  /* If the timer was never really run (under 5 seconds), assume the full target,
+     so "Finish and log" completes the item just like the quick tick does.
+     Otherwise log the real elapsed minutes, rounded, at least 1. */
+  var mins;
+  if (sheetState.sec < 5){
+    mins = sheetState.itemMin || 1;
+  } else {
+    mins = Math.max(1, Math.round(sheetState.sec / 60));
+  }
   var itemId = sheetState.itemId;
   closeSheet();
   openLog(itemId, mins);
