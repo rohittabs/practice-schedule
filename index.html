@@ -24,7 +24,10 @@
   --glasshi:rgba(255,255,255,.9); --glasslow:rgba(255,255,255,.4);
   --rowglass:rgba(255,255,255,.52);
   --solid:rgba(255,255,255,.78);
-  --ink:#1C1E30; --muted:#5F6580; --faint:#9AA0BB;
+  --sheet:rgba(255,255,255,.92); --scrim:rgba(22,24,54,.30);
+  --ink:#1C1E30; --muted:#525872; --faint:#636985;
+  --onwarn:#7E4E00; --ongood:#0B6A45; --onneutral:#636985;
+  --pillwarn:#9A6200; --pillgood:#0C7048;
   --tint:rgba(253,58,132,.12); --ontint:#D42E63;
   --good:#22B573; --warn:#F5A623; --bad:#E5484D;
   --cardshadow:0 14px 44px rgba(24,28,68,.13), inset 0 1px 0 var(--glasshi);
@@ -43,7 +46,10 @@
   --glasshi:rgba(255,255,255,.22); --glasslow:rgba(255,255,255,.06);
   --rowglass:rgba(255,255,255,.06);
   --solid:rgba(14,17,42,.72);
-  --ink:#F3F4FF; --muted:#A8ADD3; --faint:#5F6595;
+  --sheet:rgba(20,24,56,.88); --scrim:rgba(3,4,14,.60);
+  --ink:#F3F4FF; --muted:#A8ADD3; --faint:#8B91C0;
+  --onwarn:#F5C242; --ongood:#3DDC97; --onneutral:#9096C6;
+  --pillwarn:var(--warn); --pillgood:var(--good);
   --tint:rgba(33,212,253,.13); --ontint:#6FE0FF;
   --good:#3DDC97; --warn:#F5C242; --bad:#FF5A7A;
   --cardshadow:0 16px 48px rgba(0,0,6,.5), inset 0 1px 0 var(--glasshi);
@@ -366,13 +372,13 @@ nav.tabs button.on{
 
 /* ---- Sheets ---- */
 .scrim{
-  position:fixed; inset:0; background:rgba(8,8,24,.45); z-index:60;
+  position:fixed; inset:0; background:var(--scrim); z-index:60;
   display:none; align-items:flex-end; justify-content:center;
   -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
 }
 .scrim.open{display:flex;}
 .sheet{
-  background:var(--glass);
+  background:var(--sheet);
   -webkit-backdrop-filter:blur(30px) saturate(1.8); backdrop-filter:blur(30px) saturate(1.8);
   border:1px solid var(--glassbrd); border-bottom:none;
   border-radius:28px 28px 0 0; width:100%; max-width:640px;
@@ -602,10 +608,11 @@ nav.tabs button.on{
 .song .meta span.art{font-size:12.5px; color:var(--muted); display:block;
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 .spill{display:inline-block; font-size:9.5px; font-weight:800; letter-spacing:.5px;
-  text-transform:uppercase; padding:3px 9px; border-radius:999px; margin-top:6px; color:#fff;}
+  text-transform:uppercase; padding:3px 9px; border-radius:999px; margin-top:6px; color:#fff;
+  text-shadow:0 1px 1px rgba(0,0,0,.26);}
 .spill.s1{background:linear-gradient(120deg,var(--a1),var(--a2));}
-.spill.s2{background:var(--warn);}
-.spill.s3{background:var(--good);}
+.spill.s2{background:var(--pillwarn);}
+.spill.s3{background:var(--pillgood);}
 .bpmline{display:flex; align-items:center; gap:10px; margin-top:14px;
   font-size:12.5px; color:var(--muted); font-weight:600;}
 .bpmtrack{flex:1; height:8px; background:var(--glasslow); border:1px solid var(--line);
@@ -614,15 +621,19 @@ nav.tabs button.on{
   background:linear-gradient(90deg,var(--a1),var(--a2));}
 .parts{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px;}
 .part{font-size:11.5px; font-weight:700; padding:6px 11px; border-radius:999px;
-  border:1px solid var(--line); background:var(--glasslow); color:var(--faint);
-  display:inline-flex; align-items:center; gap:6px;}
+  border:1px solid var(--line); background:var(--glasslow); color:var(--onneutral);
+  display:inline-flex; align-items:center; gap:5px;}
+.part .pn{font-weight:700; white-space:nowrap;}
+.part .psep{font-weight:700; opacity:.5;}
+.part .pst{font-weight:600; white-space:nowrap;}
 .part.done{background:color-mix(in srgb,var(--good) 16%,transparent);
-  border-color:color-mix(in srgb,var(--good) 45%,transparent); color:var(--good);}
+  border-color:color-mix(in srgb,var(--good) 45%,transparent); color:var(--ongood);}
 .part.work{background:color-mix(in srgb,var(--warn) 16%,transparent);
-  border-color:color-mix(in srgb,var(--warn) 50%,transparent); color:var(--warn);}
+  border-color:color-mix(in srgb,var(--warn) 50%,transparent); color:var(--onwarn);}
 .part.newpart{border-style:dashed; color:var(--ontint);}
 .part .px{color:inherit; opacity:.75; font-size:13px; line-height:1; padding:0 0 0 2px;}
 .statusrow{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:4px;}
+.statusrow.two{grid-template-columns:1fr 1fr;}
 .statusrow button{padding:12px 4px; border-radius:14px; background:var(--glasslow);
   border:1px solid var(--line); font-size:12.5px; font-weight:700; color:var(--muted);}
 .statusrow button.on{color:#fff; border-color:rgba(255,255,255,.35);}
@@ -643,6 +654,7 @@ nav.tabs button.on{
 .bpmin:focus{outline:none; border-bottom:2px solid var(--a2); box-shadow:none;}
 .bpmin::-webkit-outer-spin-button, .bpmin::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
 .statgrid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:6px;}
+.statgrid.two{grid-template-columns:1fr 1fr;}
 .stat{background:var(--glasslow); border:1px solid var(--line); border-radius:16px;
   padding:12px 8px; text-align:center;}
 .stat small{display:block; font-size:10px; font-weight:700; color:var(--muted);
@@ -1037,6 +1049,7 @@ function load(){
       if (!s.extras) s.extras = [];
       s.extras = s.extras.filter(function (e) { return e.date === todayKey(); });
       if (!s.songs) s.songs = [];
+      migrateSongs(s);
       state = s;
       return !!s.profile.name;
     }
@@ -1373,6 +1386,18 @@ function renderPlan(){
 var SONGSTATUS = ["Learning", "Polishing", "Performance ready"];
 var SONGSTATUS_SHORT = ["Learning", "Polishing", "Ready"];
 var PSTATE = ["To do", "Working", "Done"];
+/* A section chip looks the same wherever it appears: name, separator, state. */
+function partClass(st){ return st === 2 ? "done" : st === 1 ? "work" : ""; }
+function partChipHTML(p){
+  var st = (p && p.st) || 0;
+  return '<span class="pn">' + esc(p.n) + '</span> '
+    + '<span class="psep" aria-hidden="true">\u00B7</span> '
+    + '<span class="pst">' + PSTATE[st] + '</span>';
+}
+/* Screen readers get a clean sentence instead of a decorative middot. */
+function partChipLabel(p){
+  return ((p && p.n) ? p.n : "") + ", " + PSTATE[(p && p.st) || 0];
+}
 
 function findSong(id){
   for (var i = 0; i < state.songs.length; i++) if (state.songs[i].id === id) return state.songs[i];
@@ -1397,13 +1422,28 @@ function songWork(s){
   var c = partCounts(s.parts);
   var hasParts = c.total > 0;
   var span = (s.target || 0) - (s.start || 0);
-  var hasTempo = !!s.tempoSet && (s.target || 0) > 0 && span > 0;
+  var hasTempo = songTempoOn(s) && (s.target || 0) > 0 && span > 0;
   var pp = hasParts ? c.done / c.total : 0;
   var tp = hasTempo ? Math.min(1, Math.max(0, ((s.cur || 0) - (s.start || 0)) / span)) : 0;
   if (hasParts && hasTempo) return pp * 0.6 + tp * 0.4;
   if (hasParts) return pp;
   if (hasTempo) return tp;
   return 0; /* nothing measurable yet: the stage alone speaks */
+}
+function songTempoOn(s){
+  if (!s) return false;
+  if (typeof s.tempoOn === "boolean") return s.tempoOn;
+  return !!(s.tempoSet && (s.target || 0) > 0);
+}
+/* Stamp the flag onto older saves so backups and exports carry it too. */
+function migrateSongs(st){
+  var list = (st && st.songs) || [];
+  for (var i = 0; i < list.length; i++){
+    if (typeof list[i].tempoOn !== "boolean"){
+      list[i].tempoOn = !!(list[i].tempoSet && (list[i].target || 0) > 0);
+    }
+  }
+  return st;
 }
 function songPct(s){
   var b = STATUS_BAND[(s.status || 1) - 1] || STATUS_BAND[0];
@@ -1414,7 +1454,7 @@ function songProgressNote(s){
   var c = partCounts(s.parts);
   var bits = [SONGSTATUS[(s.status || 1) - 1] + " stage"];
   bits.push(c.total ? c.done + " of " + c.total + " " + sectionWord(c.total) + " done" : "no sections yet");
-  bits.push((s.tempoSet && s.target > 0) ? "tempo " + s.cur + " of " + s.target : "tempo not tracked");
+  if (songTempoOn(s)) bits.push(s.target > 0 ? "tempo " + s.cur + " of " + s.target : "tempo " + s.cur + ", no goal set");
   return bits.join(" \u00B7 ");
 }
 /* When the tracked work is finished but the song is not marked ready,
@@ -1423,7 +1463,7 @@ function songNudge(s){
   var st = s.status || 1;
   if (st === 3) return "";
   var c = partCounts(s.parts);
-  if (!c.total && !(s.tempoSet && s.target > 0)) return "";
+  if (!c.total && !(songTempoOn(s) && s.target > 0)) return "";
   if (songWork(s) < 0.999) return "";
   return st === 1
     ? "Everything you are tracking is done. Move this to <b>Polishing</b> when you start refining it."
@@ -1525,18 +1565,19 @@ function renderSongs(){
         + '<span class="meta"><b>' + esc(s.name) + '</b>'
         + (s.artist ? '<span class="art">' + esc(s.artist) + '</span>' : '')
         + '<span class="spill s' + (s.status || 1) + '">' + SONGSTATUS[(s.status || 1) - 1] + '</span></span></span>';
-      if (s.tempoSet && s.target > 0){
+      if (songTempoOn(s) && s.target > 0){
         html += '<span class="bpmline"><span>' + s.cur + ' bpm</span>'
           + '<span class="bpmtrack"><i style="width:' + tp + '%"></i></span>'
           + '<span>' + s.target + '</span></span>';
-      } else if (s.tempoSet){
+      } else if (songTempoOn(s)){
         html += '<span class="bpmline"><span>' + s.cur + ' bpm</span></span>';
       }
       if (c.total){
         html += '<span class="parts">';
         for (var q = 0; q < s.parts.length; q++){
-          var st = s.parts[q].st || 0;
-          html += '<span class="part ' + (st === 2 ? "done" : st === 1 ? "work" : "") + '">' + esc(s.parts[q].n) + (st === 2 ? " \u2713" : "") + '</span>';
+          html += '<span class="part ' + partClass(s.parts[q].st || 0) + '"'
+            + ' aria-label="' + esc(partChipLabel(s.parts[q])) + '">'
+            + partChipHTML(s.parts[q]) + '</span>';
         }
         html += '</span>';
       }
@@ -1563,10 +1604,11 @@ function openSong(id){
     kind: "song",
     id: s ? s.id : null,
     status: s ? (s.status || 1) : 1,
-    cur: s ? s.cur : 60,
-    target: s ? s.target : 120,
+    cur: (s && s.cur) ? s.cur : 60,
+    target: (s && typeof s.target === "number") ? s.target : 120,
     parts: s ? JSON.parse(JSON.stringify(s.parts || [])) : [],
     tempoTouched: s ? !!s.tempoSet : false,
+    tempoOn: s ? songTempoOn(s) : false,
     editParts: false
   };
   var html = '';
@@ -1587,8 +1629,14 @@ function openSong(id){
     + '<button type="button" onclick="setSongStatus(1)">Learning</button>'
     + '<button type="button" onclick="setSongStatus(2)">Polishing</button>'
     + '<button type="button" onclick="setSongStatus(3)">Ready</button></div>';
-  html += '<label>Tempo (set the target to 0 if you are not tracking speed yet)</label>'
-    + '<div class="bpmrow">'
+  html += '<label>Tempo <span style="text-transform:none; letter-spacing:0; font-weight:500">(are you working on speed for this song?)</span></label>'
+    + '<div class="statusrow two" id="sgTempoPick">'
+    + '<button type="button" onclick="setSongTempoOn(true)">Track tempo</button>'
+    + '<button type="button" onclick="setSongTempoOn(false)">Not tracking</button>'
+    + '</div>'
+    + '<p class="hint" id="sgTempoOff">No tempo for this song. Progress comes from your sections alone, and no bpm is shown anywhere. Switch this on whenever you start working on speed.</p>'
+    + '<div id="sgTempoBox">'
+    + '<div class="bpmrow" style="margin-top:12px">'
     + '<button class="step" type="button" ontouchend="stepTap(event,stepCurBpm,-1)" onclick="stepClick(stepCurBpm,-1)" aria-label="One bpm slower">&#8722;</button>'
     + '<span class="bpmwrap"><input class="bpmin" id="sgCurVal" type="number" inputmode="numeric" min="20" max="300" step="1" value="' + sheetState.cur + '" oninput="typeSongBpm(\'cur\')" onchange="commitSongBpm(\'cur\')"><em>bpm now</em></span>'
     + '<button class="step" type="button" ontouchend="stepTap(event,stepCurBpm,1)" onclick="stepClick(stepCurBpm,1)" aria-label="One bpm faster">+</button>'
@@ -1598,20 +1646,19 @@ function openSong(id){
     + '<span class="bpmwrap"><input class="bpmin" id="sgTargetVal" type="number" inputmode="numeric" min="0" max="300" step="1" value="' + sheetState.target + '" oninput="typeSongBpm(\'target\')" onchange="commitSongBpm(\'target\')"><em>bpm target</em></span>'
     + '<button class="step" type="button" ontouchend="stepTap(event,stepTargetBpm,1)" onclick="stepClick(stepTargetBpm,1)" aria-label="Raise target by one">+</button>'
     + '</div>'
-    + '<p class="hint">Tap either number to type it in, or nudge it one beat at a time.</p>';
-  if (s && s.tempoSet && s.hist && s.hist.length > 1){
+    + '<p class="hint">Tap either number to type it in, or nudge it one beat at a time. Leave the target at 0 if you have no goal speed yet.</p>';
+  if (s && songTempoOn(s) && s.hist && s.hist.length > 1){
     html += '<div class="card" style="margin:16px 0 0; padding:14px">' + bpmChartSVG(s)
       + '<div class="legend"><span><i style="background:linear-gradient(90deg,var(--a1),var(--a2))"></i>Your tempo</span>'
       + (s.target > 0 ? '<span><i style="background:var(--good)"></i>Target</span>' : '') + '</div></div>';
   } else if (s){
-    html += '<p class="hint">' + (s.tempoSet
-      ? "Update your tempo on a few different days and a progress chart will appear here."
-      : "Set a tempo above to start tracking speed for this song. Leave it alone if you are not working on speed yet.") + '</p>';
+    html += '<p class="hint">Update your tempo on a few different days and a progress chart will appear here.</p>';
   }
+  html += '</div>';
   if (s){
-    var gained = (s.tempoSet && s.hist && s.hist.length) ? (s.cur - s.hist[0].b) : 0;
-    html += '<div class="statgrid">'
-      + '<div class="stat"><small>Tempo gained</small><b>' + (gained > 0 ? "+" : "") + gained + '</b></div>'
+    var gained = (songTempoOn(s) && s.hist && s.hist.length) ? (s.cur - s.hist[0].b) : 0;
+    html += '<div class="statgrid" id="sgStats">'
+      + '<div class="stat" id="sgGain"><small>Tempo gained</small><b>' + (gained > 0 ? "+" : "") + gained + '</b></div>'
       + '<div class="stat"><small>Practiced</small><b>' + fmtMin(songMinutes(s.id)) + '</b></div>'
       + '<div class="stat"><small>Sessions</small><b>' + songSessionCount(s.id) + '</b></div></div>';
   }
@@ -1628,7 +1675,38 @@ function openSong(id){
   html += '<button class="btn ghost wide" onclick="closeSheet()">Cancel</button>';
   openSheet(html);
   paintSongStatus();
+  paintSongTempo();
   renderParts();
+}
+function paintSongTempo(){
+  var on = !!sheetState.tempoOn;
+  var pick = document.getElementById("sgTempoPick");
+  if (pick){
+    pick.children[0].className = on ? "on s1" : "";
+    pick.children[1].className = on ? "" : "on s1";
+  }
+  var box = document.getElementById("sgTempoBox");
+  if (box) box.style.display = on ? "" : "none";
+  var off = document.getElementById("sgTempoOff");
+  if (off) off.style.display = on ? "none" : "";
+  var gain = document.getElementById("sgGain");
+  if (gain) gain.style.display = on ? "" : "none";
+  var stats = document.getElementById("sgStats");
+  if (stats){
+    if (on) stats.classList.remove("two"); else stats.classList.add("two");
+  }
+}
+function setSongTempoOn(on){
+  sheetState.tempoOn = !!on;
+  if (on){
+    /* Turning it on for the first time seeds sensible numbers rather than blanks. */
+    if (!sheetState.cur) sheetState.cur = 60;
+    var cEl = document.getElementById("sgCurVal");
+    var tEl = document.getElementById("sgTargetVal");
+    if (cEl && !cEl.value) cEl.value = sheetState.cur;
+    if (tEl && tEl.value === "") tEl.value = sheetState.target;
+  }
+  paintSongTempo();
 }
 function paintSongStatus(){
   var box = document.getElementById("sgStatus");
@@ -1693,15 +1771,15 @@ function renderParts(){
   var p = sheetState.parts || [];
   var h = "";
   for (var i = 0; i < p.length; i++){
-    var st = p[i].st || 0;
-    var cls = st === 2 ? "done" : st === 1 ? "work" : "";
+    var cls = partClass(p[i].st || 0);
     if (sheetState.editParts){
       h += '<span class="part ' + cls + '">'
         + '<button type="button" style="color:inherit; font:inherit; font-weight:700" onclick="renamePart(' + i + ')">' + esc(p[i].n) + '</button>'
         + '<button type="button" class="px" onclick="removePart(' + i + ')" aria-label="Remove section">&#10005;</button></span>';
     } else {
-      h += '<button type="button" class="part ' + cls + '" onclick="cyclePart(' + i + ')">'
-        + esc(p[i].n) + ' \u00B7 ' + PSTATE[st] + '</button>';
+      h += '<button type="button" class="part ' + cls + '" onclick="cyclePart(' + i + ')"'
+        + ' aria-label="' + esc(partChipLabel(p[i])) + '. Tap to change.">'
+        + partChipHTML(p[i]) + '</button>';
     }
   }
   h += '<button type="button" class="part newpart" onclick="addPartInput()">+ Add section</button>';
@@ -1776,11 +1854,12 @@ function saveSong(){
       s.name = name;
       s.artist = artist;
       s.status = sheetState.status;
-      s.target = sheetState.target;
-      s.tempoSet = !!sheetState.tempoTouched;
+      s.tempoOn = !!sheetState.tempoOn;
+      s.target = s.tempoOn ? sheetState.target : 0;
+      s.tempoSet = s.tempoOn && !!sheetState.tempoTouched;
       s.parts = sheetState.parts;
       s.note = note;
-      if (s.cur !== sheetState.cur){
+      if (s.tempoOn && s.cur !== sheetState.cur){
         s.cur = sheetState.cur;
         pushBpm(s, s.cur);
       }
@@ -1791,10 +1870,11 @@ function saveSong(){
     var ns = {
       id: uid(), name: name, artist: artist,
       status: sheetState.status,
-      cur: sheetState.cur, target: sheetState.target, start: sheetState.cur,
-      tempoSet: !!sheetState.tempoTouched,
+      cur: sheetState.cur, target: sheetState.tempoOn ? sheetState.target : 0, start: sheetState.cur,
+      tempoOn: !!sheetState.tempoOn,
+      tempoSet: !!sheetState.tempoOn && !!sheetState.tempoTouched,
       parts: sheetState.parts, note: note,
-      hist: [{ d: todayKey(), b: sheetState.cur }],
+      hist: sheetState.tempoOn ? [{ d: todayKey(), b: sheetState.cur }] : [],
       created: todayKey()
     };
     state.songs.push(ns);
@@ -2932,6 +3012,7 @@ function importJSON(input){
       if (!s.extras) s.extras = [];
       s.extras = s.extras.filter(function (e) { return e.date === todayKey(); });
       if (!s.songs) s.songs = [];
+      migrateSongs(s);
       state = s;
       if (state.settings && state.settings.theme) applyTheme(state.settings.theme);
       save(); render();
@@ -2994,8 +3075,8 @@ function songSummaryLine(s){
   bits.push("*" + s.name + "*" + (s.artist ? " (" + s.artist + ")" : ""));
   bits.push(SONGSTATUS_SHORT[(s.status || 1) - 1]);
   bits.push(songPct(s) + "%");
-  if (s.tempoSet && s.target > 0) bits.push(s.cur + "/" + s.target + " bpm");
-  else if (s.tempoSet && s.cur) bits.push(s.cur + " bpm");
+  if (songTempoOn(s) && s.target > 0) bits.push(s.cur + "/" + s.target + " bpm");
+  else if (songTempoOn(s) && s.cur) bits.push(s.cur + " bpm");
   var c = partCounts(s.parts);
   var allDone = c.total > 0 && c.done === c.total;
   if (c.total){
