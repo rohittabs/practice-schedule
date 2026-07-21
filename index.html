@@ -26,7 +26,7 @@
   --solid:rgba(255,255,255,.78);
   --ink:#1C1E30; --muted:#5F6580; --faint:#9AA0BB;
   --tint:rgba(253,58,132,.12); --ontint:#D42E63;
-  --good:#22B573; --bad:#E5484D;
+  --good:#22B573; --warn:#F5A623; --bad:#E5484D;
   --cardshadow:0 14px 44px rgba(24,28,68,.13), inset 0 1px 0 var(--glasshi);
   --glow:0 10px 28px rgba(253,58,132,.35);
   --line:rgba(28,30,48,.1);
@@ -45,7 +45,7 @@
   --solid:rgba(14,17,42,.72);
   --ink:#F3F4FF; --muted:#A8ADD3; --faint:#5F6595;
   --tint:rgba(33,212,253,.13); --ontint:#6FE0FF;
-  --good:#3DDC97; --bad:#FF5A7A;
+  --good:#3DDC97; --warn:#F5C242; --bad:#FF5A7A;
   --cardshadow:0 16px 48px rgba(0,0,6,.5), inset 0 1px 0 var(--glasshi);
   --glow:0 10px 30px rgba(183,33,255,.45);
   --line:rgba(255,255,255,.1);
@@ -55,7 +55,12 @@
 button, .tick, .btn, .stepper button, nav.tabs button, .moods button, .dayspick button,
 .catpick button, .swatches button, .mode, .histtoggle, .sw-btn, .instpick button, .item, .hist, .catmg,
 label, input, select, textarea, a{touch-action:manipulation;}
-html,body{background:var(--bg); min-height:100vh;}
+html,body{
+  background-color:var(--bg);
+  background-image:linear-gradient(var(--bg), var(--bg));
+  background-attachment:fixed;
+  min-height:100vh;
+}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Plus Jakarta Sans",sans-serif;
   color:var(--ink); font-size:16px; line-height:1.5;
@@ -347,10 +352,12 @@ nav.tabs{
   transition:background .4s ease;
 }
 nav.tabs button{
-  flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
-  color:var(--faint); font-size:11px; font-weight:700; padding:7px 0; border-radius:18px;
+  flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:2px;
+  color:var(--faint); font-size:10px; font-weight:700; padding:7px 2px; border-radius:18px;
+  letter-spacing:-.1px; white-space:nowrap;
   transition:all .2s ease;
 }
+@media (min-width:420px){ nav.tabs button{font-size:11px;} }
 nav.tabs button .ic{height:22px; display:flex; align-items:center; justify-content:center; line-height:1;}
 nav.tabs button.on{
   color:#fff; background:linear-gradient(120deg,var(--a1),var(--a2));
@@ -441,8 +448,17 @@ nav.tabs button.on{
 .metro{margin-top:22px; padding-top:18px; border-top:1px solid var(--line);}
 .metro .mlabel{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
 .metro .mlabel span{font-size:12.5px; font-weight:800; color:var(--muted); letter-spacing:.6px; text-transform:uppercase;}
-.metro .mbpm{font-family:"Sora",sans-serif; font-weight:800; font-size:26px; letter-spacing:-.5px;}
-.metro .mbpm em{font-style:normal; font-size:13px; font-weight:600; color:var(--muted); margin-left:3px;}
+.metro .mbpmwrap{display:flex; align-items:baseline; gap:5px;}
+.metro .mbpmwrap em{font-style:normal; font-size:13px; font-weight:600; color:var(--muted);}
+.metro .mbpmin{
+  width:64px; text-align:right; font-family:"Sora",sans-serif; font-weight:800;
+  font-size:25px; letter-spacing:-.5px; color:var(--ink);
+  background:none; border:none; border-radius:0; padding:0 0 1px;
+  border-bottom:2px dotted color-mix(in srgb, var(--ink) 25%, transparent);
+  -moz-appearance:textfield; appearance:textfield;
+}
+.metro .mbpmin:focus{outline:none; border-bottom:2px solid var(--a2); box-shadow:none;}
+.metro .mbpmin::-webkit-outer-spin-button, .metro .mbpmin::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
 .metro .mrow{display:flex; align-items:center; gap:10px;}
 .metro .mstep{
   width:46px; height:46px; border-radius:14px; flex:none; font-size:22px; font-weight:700;
@@ -564,8 +580,81 @@ nav.tabs button.on{
   -webkit-mask:var(--mi) center / contain no-repeat; mask:var(--mi) center / contain no-repeat;}
 .tabic.ttoday{--mi:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAACXBIWXMAAAOwAAADsAEnxA+tAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAD4tJREFUeJztnX+QVeV5xz/PuctPmyCmjU2rTdJUJ82Pmh822MQxwxij0+AkkxRGDWBrG8noyG4VsxaM3lDQVVB2AYWgoK5gksUfbSHRqZhtNGYSZdQGI8QfJdOQ2nRqFGwQ2N3z9I9ll3vPPee85z3nvfecu3u/Mwxwdp+z7/d5n+f7fs979twjZMCXX9K3Dx3i857POcBHRDlJlOmesl+VVz14Dp9+9Xmgd4a8luVntVAfSJqgC3fpiUNCp6csEGWqKIgCR/8WHT5xxbEBlN42WH7nDNnrlEELmWBdAHOe14sFVokyvWrSOTb5VYVQ8XXgsPh06xDLN50pbzpl0kIqJC6A2aol2U2P+FxOYMITKEDwz/8iLHtjH2u3zpGhepFrwQwv0Xepiu5mI8rlUNvt6PC3CRUVFVIQFfhd8ek+4V38+Cs/0E9mp9FCWiRSgL/arf/g+dxQ1enEdL9BAQLxKsq32nw618yUfXVj2kIojAUwe7d+WHx2AhOTSH7kpFN7LOAhDgJdkyayctUn5a36UW6hEuYlwGcFFZMfJvlCxfFwya+Z9NHjx+Knis/Sgbd48YpHdT6qqa5QWrBDbJJn79aPi8/OqA52rADBJeJxVTrWnCPP1o9+C7EKIMrcin/XWwGCxvGskrKz41+1t32HnpiBYwsxiFWAOT/Tn4tyqoPLvuEfll5B9qvwj9MOsKY8R47UNSPjDJEFMPsVnSaHeF0USSTZIVcBkVcAIQUVdhUREv+SKEtWzJKt9U/N+EDkEtB2kHePTH4iyR45PgKD5FctJ4Z4ORZ/CtD3tW26Y/F2/ZA93RaCiCwA9Zg28u+wjZ+q9R+C63fVZJo2jsQQDwTV4uwh5Zlr/lm7r9mu01Nyb4GYAhCYYGXaiO5ghwpw7Bw+E1DaZYCXFz+k7eV+bbNi3gKQcCs4bsKiFCAsPkoBwuKjFCAk/gRRugd+w65rH9TzkvBp4RhMl4HRkx6iAMHYBivI+8Xn4a9v1W3lB/SPLXIwrhFdAIPDfyWedJNk11FBAh5ilg6yu/wd7Slv1rcnS8P4RXoFABvTNnyM+GISQ3zVOeI9xESUhVJiz9Itemm5rMnueo5DGBPTDAoQFn/0+LsQvlk6hadu2KyfMnEdj0ilAKOIm/SEkt0gD/FxH564YbP2Ldui747jPN6QWAGALE49+2VfdgURfGZ7g7xw411avrVPp5i4jwdE7wSCW6eOw2JKMLYYBZkqwvUDB3nx5o06X8f5bef4JYDkk2Z06hbFJBo4byDeiYdQTkK4Z+Um+m/ZqKfF5WEsI34JcKkAwfg6KEBYfAIP8Wn1eebWDdrbfcf4u+0cuw9QV6cO7oopEJ/CQ3gK83yfPd3rtXP1ap0UmZcxBmsFqEQmp+6ymNwpyPEKXdrGT7vX6azY3IwRJPIAo8jWZfGTbqEA9fIQFbGnirJt9W366Nq1+sG4HDU7EilALrt9+ShAMP4zKM+uXa09q1bp8bG5alIURwHIsJwExubYQ0wQWDjJ45XberS9r09LYblqVjhRgLo4dZfF5EZBTvCU7td/xa4N3XpuVMqaDbEbQYVy6lmKKSI+DTdV/lSHeGTDLbrtjhX63tDkNRGsFKASDV+nQ85tKiYxxEeNzcTt6NhmAXs23qQ9G2/St0WlsOhItA8wglydekEUIDC2iSosBPZsurE5bzs3jwIE47MsJ+65/YEI33zPRH6yaVlzPe1svAqo+n8+XRYaXzNpWYrJETfg9JLww3uWaV9vl/4RTQCjAhSoy+IVhOr4uhrS+LGJwGwZ4IV7v6Hlu8o6mQIjlQLk2WWRHiLh2EzFJBbcDOp2nAjXTxRe3FLW+RQUqRQgkWmLiYfwSbNx6oTEJxmbiRuG+BTqdrIo99xX1u/fV9Y/o2CILIASxVYAa9nPUkwOuInPTG+IZ799rfY+WNZ3UhAkVoAirLNh8Yk9RMzYGsjN82De4AB7ti7Wzr6yTiRnGJ8LGEHul31g7LJYBXFZTNm5TRfoKh1m1wOd+jlyhPG3gnOT7EC8aw9hlGwLbmn9EcqpAtsf6tRH/+kq/QA5IPHOVeaEh8QDoV1i49QJiU9UkBZjM3HDEG9UN+UzeDz3L4u0p69Tp9FANL0CpPYQxeM2QWHh5EFe2XaVtvfNbsxtZ/NW8FE03LS57jKIn/TicHsHPt1TTuLp77brWdQZ5l8IqVfCI+JzUxDH3LJ6CE/5KPCD7y3UbQ936HuoE+KvAoKJcZlwx12W1kPYmDYbQ0pIfEp1m+UN8cIjV2hX/2X6OziG+RdC4hKTJeEEzhtSUDZd5rwgC6RuqkwRpXNA2PPoZTpfcfc0UyIPYOFmc1OAsHinHqIY3P4Q5Z7HvspPdizQv8AB7DyAqcuC8VkSTiDhde6yJuP25wJPfv9S7e2/TH+fDLBSgNFjUYlxmfCiKUhKbmk9hImbDH9pHgO83P93Wu7/63S3nc23g7N0WZaEG+JdewgTN7Hg1mB1O06U60slnn/8b/TTWMJ8MwgST1pNYgKkMiU8EF84DxExNhM3DPFJuaG8T+CxJy7Wy7HAmFOAsPiGeIhicCuJsPaH83UxCWHcB3DaZS4TnkOXNQs3gWVPztMLSADjPkBduyxLwkPiC6UgMWOz8RAmbhIeLyKsf+oCPRkDEnuAqmOuuiwBqUpiNl2W1kOYuIkFt1zVTZnml1iOAebbwdkq0dglzhJecAUwcas6rytucOHTF8V/aqr5djBkq0QDsTBSDTFt44Nb21DFW1/C4EwBnHRZ5fFoUsXqsrQK0iBuHnyBGGRSAOddVs+ER8Q3WkFSLZUJuEl0/Id/NDv6MxGtFSCWlOsuc5nwBF0mhviqsVlwy1MBRGmbDO8lAvFPB7utxNGBhU2aadIzJ5zAeXNSABO3eqjbYInIj7eJfMtG28jPyVMBgsTAXcLHEbeST+AMx5DIA4SRyqXLXCZ8HHFTjzeIQCIPUNguy5LwnLkZl7SIsSVaKqvjBw5MYS8RSK0AReiyKm9iMTYbD2HiltYfWRdk+rzvmnm3HCICVgpgQyqkEhN1ianLxooCGLkF49Ny83mIGFgpgE2X5bLOukz42OA2WBK2EIO6KUBYfMO7LEvCxwI3uO+0rbKXGERfBg5V5STZoEJI5dplhrEVgVtaD1ETXzu2N0qDLMEA8ytjbBKeU5dFeoh6JjxmbDb+yFlBVo9NxefS0x6UfRhgfmmUYVAmUmk9hKnLUhVkARWgHtzwueaj9yd7w7rxfbvNoACJu2wscxuOHxS44mP3y3oSIrYAGm5sQuKddpn7hBeHG7wswiUf+448gQUSK0AusgbVCXfdZXXm1ggPIcpvgZXTDnDjKQ/LYSwRXwDFkLWaeNcewjLhRVEAFWGzDvK1T2yV/yYl4pcAi0GlSngtqZqCsumyzAWZYGwmbhjiXaibwlPq0X7GFvkxGRG9DzAI/giJBIMKI9V062zxuf0KZfGM+7hXas6QDmYFwJAYt7JWmC4rGLe3PFh98AjLZm6V/8MhzB7A1GU4THggvnAK0gBuUhu/nTaumHG3/II6IJECxHZZPRNuiHftIUwFXXVei7HZ+KPRcwjP+EN0nLnZ7rLOFsleGAGJJ81pwi26bKwoAMpronTsO8gn6j354EIBID4xOShAWHxdPIRbbgMqrJsyketO3yD7aRASeYBMXVZ5vCJ2THgId9x2qNB+1l3yAg1GagWo+j5Dl+Qm2Yb4RnML8RA/93yuPPNu+R45IboARj4t3HWXNVCy03oIEzex4BYxtteBm97xJqs+uFWOkCPMzwVAKjcbmRgcJtxibLl4iNqx+Qhb2tpY9Kn18j8UAEYPYNNlUCwFyN1DVIf3e0rHWXfKTykQjB4AqG+XuUx4AgXBEF8Hbr/E59qZd0ovBURmBXDeZXlKtltuv0VZKUfoivu9/LyRSgGC3+O0y6iOdyHZaT2EiZuExytw/2CJq869XX5JwZFYASph6rKqhFtMWsqEW42tzgrwtAgdZ6+TH9EkSPbiSMsuGz1eEZ96nXWgAA3wEP/lKQuePJEzzr69eSYfEuwD5N5lxE9Yzpd9bwmsnnqI5WdukjdpQsTuA/gj/8mzy+or2Vm4bUdY+Nm1sjcsf80C428FF6DLnBVTWg9RGS8+z4nSfu5t8nhk4poIyV4bl7LL0noIK6feOAV4TXw6Dvya08fK5EMKBbDpsrooAKRWgJFYSw8xAKybcIjrzmngbdpGwfhcAJDnOjsaHznpLoupNn5HSeg4r1t+ZsxRkyL2KkCkYV3mTkGyFNOxc78oPld9rke2R+ZnjCCRAjT0si+rgoCxmGI8xBsCXd4g3X+5xv4pm2ZEIg9QdQz7LkvrIVI59XQK4ANbBj0WfXFlMW7TNgqpFcCmy3L1EIblxFP+TXw6zr9V/j1JLsYaIgugBKNJq4TDdTYfD3HsvPuAJeevdPeUTTPCSgEKcdmXVUHgILBi2nF0zSwX9zZto2D+fIBGSzbUKEBYfAoFUeD+Nlh0/s3yn3G8xxPMnw+AO8lO6yFMCiKGeGAnQscXu+RJE9/xBuOnhadKeHEU4FVRFuyaxIwv3dia/DA0VAEa6CGOiLL+0CS+PrcsB4xZGMdI5gGCk95I02avINu9Idq/1CX/kYD/uEcyBYDCX/Yp7BH4+znL5ZEkxFsYRvyDIVGTnlGy03qICAX5jacs/b02bptZlkFasEJkAagwUDU5cZOWQLKdK8Dw+G4fGuAbF3TJ6/bUW4C4AvDZX9WpWMi+vWmz8xDwmEDHBUvleWvGLVQhsgAGSvxi8iC+gGct+5XHMZo2Gw/xkvosuWhpso9BbcGMyH2A8lw5gPJyKqeewLRZeoj9CosmwIe+3Jp8pzA9GbRd4Eog225fAgWIKCZfhC2ex9UXLZFfp6fZQhRiC8AfYnNJuNL5bl8yBXi8Tem48Dp5Nj29FkwI5r4GKzbqwyjnSWDCRyYyeLzK2IUd1+oCCTnvPoElcxdzr0iwtFpwjSSvjLlalMNOd/vCl5ODwHWTp3DqvCXS25r8xsCoAAAr7tCrPeXmoOTXdG+EAkR0+shx9ZRvlUp0zu00v+GiBbdIVAAAt2zQjaJcEjnpxBRDhOx7Pjt9n/ZLrm2uByrHEpI9GQScfDyXirLGxW6fp7zqKQum/glntCY/XyRWgBH0rNN5KD2iTI9TgBrZH/76YVG6FZb/bWdzPk071mBdAADr1uk7B4boFPiqKFPjJP/o8SOi9Kpww1eulr1OGbSQCakKYAQbb9K3HZzK5z3lHFE+IsrJohwvyn6GfxvnOZT+SQM8ePFiec3VoFtwh/8H6//1Vg27WJUAAAAASUVORK5CYII=");}
 .tabic.tmore{--mi:url("data:image/png;base64,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");}
+.tabic.tsong{--mi:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc+PHBhdGggZD0nTTIwLjYgMi4wIDguNCA0LjQ1djExLjJhMy41NSAzLjU1IDAgMSAwIDIgMy4xOFY4LjI4bDguMi0xLjY0djYuNDJhMy41NSAzLjU1IDAgMSAwIDIgMy4xOFYyLjB6JyBmaWxsPScjMDAwJy8+PC9zdmc+");}
 .tabic.tplan{--mi:url("data:image/png;base64,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");}
 .tabic.tprog{--mi:url("data:image/png;base64,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");}
+
+/* ---- Repertoire (Songs) ---- */
+.songgrid{margin-bottom:16px;}
+.song{
+  background:var(--glass);
+  -webkit-backdrop-filter:blur(22px) saturate(1.7); backdrop-filter:blur(22px) saturate(1.7);
+  border:1px solid var(--glassbrd); box-shadow:var(--cardshadow);
+  border-radius:24px; padding:16px; margin-bottom:14px; width:100%; text-align:left;
+  display:block; transition:transform .12s ease;
+}
+.song:active{transform:scale(.985);}
+.song .top{display:flex; align-items:center; gap:14px;}
+.song .ring{flex:none; line-height:0;}
+.song .meta{flex:1; min-width:0;}
+.song .meta b{display:block; font-size:16.5px; font-weight:800; letter-spacing:-.2px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.song .meta span.art{font-size:12.5px; color:var(--muted); display:block;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.spill{display:inline-block; font-size:9.5px; font-weight:800; letter-spacing:.5px;
+  text-transform:uppercase; padding:3px 9px; border-radius:999px; margin-top:6px; color:#fff;}
+.spill.s1{background:linear-gradient(120deg,var(--a1),var(--a2));}
+.spill.s2{background:var(--warn);}
+.spill.s3{background:var(--good);}
+.bpmline{display:flex; align-items:center; gap:10px; margin-top:14px;
+  font-size:12.5px; color:var(--muted); font-weight:600;}
+.bpmtrack{flex:1; height:8px; background:var(--glasslow); border:1px solid var(--line);
+  border-radius:999px; overflow:hidden;}
+.bpmtrack i{display:block; height:100%; border-radius:999px;
+  background:linear-gradient(90deg,var(--a1),var(--a2));}
+.parts{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px;}
+.part{font-size:11.5px; font-weight:700; padding:6px 11px; border-radius:999px;
+  border:1px solid var(--line); background:var(--glasslow); color:var(--faint);
+  display:inline-flex; align-items:center; gap:6px;}
+.part.done{background:color-mix(in srgb,var(--good) 16%,transparent);
+  border-color:color-mix(in srgb,var(--good) 45%,transparent); color:var(--good);}
+.part.work{background:color-mix(in srgb,var(--warn) 16%,transparent);
+  border-color:color-mix(in srgb,var(--warn) 50%,transparent); color:var(--warn);}
+.part.newpart{border-style:dashed; color:var(--ontint);}
+.part .px{color:inherit; opacity:.75; font-size:13px; line-height:1; padding:0 0 0 2px;}
+.statusrow{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:4px;}
+.statusrow button{padding:12px 4px; border-radius:14px; background:var(--glasslow);
+  border:1px solid var(--line); font-size:12.5px; font-weight:700; color:var(--muted);}
+.statusrow button.on{color:#fff; border-color:rgba(255,255,255,.35);}
+.statusrow button.on.s1{background:linear-gradient(120deg,var(--a1),var(--a2));}
+.statusrow button.on.s2{background:var(--warn);}
+.statusrow button.on.s3{background:var(--good);}
+.bpmrow{display:flex; align-items:center; gap:10px; margin-top:4px;}
+.bpmwrap{display:flex; flex-direction:column; align-items:center; min-width:112px; flex:1;}
+.bpmwrap em{font-style:normal; font-size:11px; font-weight:700; color:var(--muted);
+  letter-spacing:.4px; text-transform:uppercase; margin-top:1px;}
+.bpmin{
+  width:112px; text-align:center; font-family:"Sora",sans-serif; font-weight:800;
+  font-size:32px; letter-spacing:-1px; color:var(--ontint);
+  background:none; border:none; border-radius:0; padding:2px 0 1px;
+  border-bottom:2px dotted color-mix(in srgb, var(--ink) 25%, transparent);
+  -moz-appearance:textfield; appearance:textfield;
+}
+.bpmin:focus{outline:none; border-bottom:2px solid var(--a2); box-shadow:none;}
+.bpmin::-webkit-outer-spin-button, .bpmin::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+.statgrid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:6px;}
+.stat{background:var(--glasslow); border:1px solid var(--line); border-radius:16px;
+  padding:12px 8px; text-align:center;}
+.stat small{display:block; font-size:10px; font-weight:700; color:var(--muted);
+  text-transform:uppercase; letter-spacing:.4px; margin-bottom:2px;}
+.stat b{font-family:"Sora",sans-serif; font-size:18px; font-weight:800; letter-spacing:-.3px;}
+.nudge{background:var(--tint); border:1px solid color-mix(in srgb,var(--a2) 25%,transparent);
+  border-radius:16px; padding:12px 14px; margin-top:12px;
+  font-size:13px; font-weight:600; color:var(--ontint); line-height:1.5;}
+.plabel{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+.plabel .pedit{font-size:11.5px; font-weight:800; color:var(--ontint); background:var(--tint);
+  border:1px solid color-mix(in srgb,var(--a2) 25%,transparent);
+  border-radius:999px; padding:5px 12px; text-transform:none; letter-spacing:0;}
 
 /* ---- Wide screens: tablets, laptops, any orientation ---- */
 .cols > div{min-width:0;}
@@ -575,6 +664,8 @@ nav.tabs button.on{
   .hero .big{font-size:40px;}
   .cols{display:grid; grid-template-columns:1fr 1fr; column-gap:18px; align-items:start; grid-template-areas:"a b" "c b";}
   .cols .ga{grid-area:a;} .cols .gb{grid-area:b;} .cols .gc{grid-area:c;}
+  .songgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .songgrid .song{margin-bottom:0;}
   .masonry{display:flex; gap:18px; align-items:flex-start;}
   .masonry .mcol{flex:1; min-width:0; display:flex; flex-direction:column;}
   .sheet{max-width:720px;}
@@ -587,7 +678,7 @@ nav.tabs button.on{
 /* ---- Onboarding ---- */
 .onboard{
   position:fixed; inset:0; z-index:100;
-  background:color-mix(in srgb, var(--bg) 60%, transparent);
+  background-image:linear-gradient(color-mix(in srgb, var(--bg) 72%, transparent), color-mix(in srgb, var(--bg) 72%, transparent));
   -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
   display:none; overflow-y:auto;
 }
@@ -672,6 +763,7 @@ nav.tabs button.on{
   </noscript>
   <section class="view" id="view-plan"></section>
   <section class="view" id="view-today"></section>
+  <section class="view" id="view-songs"></section>
   <section class="view" id="view-stats"></section>
   <section class="view" id="view-more"></section>
 </main>
@@ -679,6 +771,7 @@ nav.tabs button.on{
 <nav class="tabs" id="tabs">
   <button data-v="plan"><span class="ic"><i class="tabic tplan"></i></span>Plan</button>
   <button data-v="today"><span class="ic"><i class="tabic ttoday"></i></span>Today</button>
+  <button data-v="songs"><span class="ic"><i class="tabic tsong"></i></span>Songs</button>
   <button data-v="stats"><span class="ic"><i class="tabic tprog"></i></span>Progress</button>
   <button data-v="more"><span class="ic"><i class="tabic tmore"></i></span>More</button>
 </nav>
@@ -872,7 +965,8 @@ function defaultCats(){
     { id: "ear",     name: "Ear training", col: "#E86FC0" },
     { id: "exam",    name: "Exam prep",     col: "#F0B429" },
     { id: "sight",   name: "Sight Reading", col: "#64B5D9" },
-    { id: "harmony", name: "Harmony",       col: "#8AC926" }
+    { id: "harmony", name: "Harmony",       col: "#8AC926" },
+    { id: "finger",  name: "Fingerstyle",   col: "#E06C75" }
   ];
 }
 function ensureDefaultCat(s, id, name, col){
@@ -922,6 +1016,7 @@ function freshState(){
     catArchive: {},
     items: [],
     extras: [],
+    songs: [],
     sessions: [],
     lastCelebrated: null,
     created: todayKey()
@@ -938,8 +1033,10 @@ function load(){
       if (!s.catArchive) s.catArchive = {};
       ensureDefaultCat(s, "sight", "Sight Reading", "#64B5D9");
       ensureDefaultCat(s, "harmony", "Harmony", "#8AC926");
+      ensureDefaultCat(s, "finger", "Fingerstyle", "#E06C75");
       if (!s.extras) s.extras = [];
       s.extras = s.extras.filter(function (e) { return e.date === todayKey(); });
+      if (!s.songs) s.songs = [];
       state = s;
       return !!s.profile.name;
     }
@@ -1120,6 +1217,7 @@ function render(){
   renderChip();
   if (currentView === "today") renderToday();
   else if (currentView === "plan") renderPlan();
+  else if (currentView === "songs") renderSongs();
   else if (currentView === "stats") renderStats();
   else renderMore();
 }
@@ -1267,6 +1365,472 @@ function renderPlan(){
   el.innerHTML = html;
   attachSwipes(el);
 }
+/* ============================================================
+   REPERTOIRE (Songs)
+   Sections start empty on purpose: the student decides what the
+   parts of their song are, and can add, rename, or remove them.
+   ============================================================ */
+var SONGSTATUS = ["Learning", "Polishing", "Performance ready"];
+var SONGSTATUS_SHORT = ["Learning", "Polishing", "Ready"];
+var PSTATE = ["To do", "Working", "Done"];
+
+function findSong(id){
+  for (var i = 0; i < state.songs.length; i++) if (state.songs[i].id === id) return state.songs[i];
+  return null;
+}
+function sectionWord(n2){ return n2 === 1 ? "section" : "sections"; }
+function partCounts(p){
+  var d = 0, w = 0;
+  p = p || [];
+  for (var i = 0; i < p.length; i++){
+    if (p[i].st === 2) d++;
+    else if (p[i].st === 1) w++;
+  }
+  return { done: d, work: w, todo: p.length - d - w, total: p.length };
+}
+/* A song is only finished when the student says it is performance ready.
+   So the chosen stage sets the band, and the measurable work (sections and
+   tempo) fills that band in. Learning tops out at 60, Polishing at 90,
+   and only Ready reaches 100. */
+var STATUS_BAND = [{ base: 0, span: 60 }, { base: 60, span: 30 }, { base: 100, span: 0 }];
+function songWork(s){
+  var c = partCounts(s.parts);
+  var hasParts = c.total > 0;
+  var span = (s.target || 0) - (s.start || 0);
+  var hasTempo = !!s.tempoSet && (s.target || 0) > 0 && span > 0;
+  var pp = hasParts ? c.done / c.total : 0;
+  var tp = hasTempo ? Math.min(1, Math.max(0, ((s.cur || 0) - (s.start || 0)) / span)) : 0;
+  if (hasParts && hasTempo) return pp * 0.6 + tp * 0.4;
+  if (hasParts) return pp;
+  if (hasTempo) return tp;
+  return 0; /* nothing measurable yet: the stage alone speaks */
+}
+function songPct(s){
+  var b = STATUS_BAND[(s.status || 1) - 1] || STATUS_BAND[0];
+  return Math.round(b.base + songWork(s) * b.span);
+}
+/* Plain-English breakdown so the number is never a mystery */
+function songProgressNote(s){
+  var c = partCounts(s.parts);
+  var bits = [SONGSTATUS[(s.status || 1) - 1] + " stage"];
+  bits.push(c.total ? c.done + " of " + c.total + " " + sectionWord(c.total) + " done" : "no sections yet");
+  bits.push((s.tempoSet && s.target > 0) ? "tempo " + s.cur + " of " + s.target : "tempo not tracked");
+  return bits.join(" \u00B7 ");
+}
+/* When the tracked work is finished but the song is not marked ready,
+   explain why the ring has stopped short and what to do about it. */
+function songNudge(s){
+  var st = s.status || 1;
+  if (st === 3) return "";
+  var c = partCounts(s.parts);
+  if (!c.total && !(s.tempoSet && s.target > 0)) return "";
+  if (songWork(s) < 0.999) return "";
+  return st === 1
+    ? "Everything you are tracking is done. Move this to <b>Polishing</b> when you start refining it."
+    : "Everything you are tracking is done. Mark it <b>Ready</b> once you can perform it, and it will show 100%.";
+}
+function songNextPart(s){
+  var p = s.parts || [];
+  for (var i = 0; i < p.length; i++) if (p[i].st === 1) return p[i].n;
+  for (var j = 0; j < p.length; j++) if (p[j].st === 0) return p[j].n;
+  return null;
+}
+function songMinutes(id){
+  var t = 0;
+  for (var i = 0; i < state.sessions.length; i++) if (state.sessions[i].songId === id) t += state.sessions[i].min;
+  return t;
+}
+function songSessionCount(id){
+  var n2 = 0;
+  for (var i = 0; i < state.sessions.length; i++) if (state.sessions[i].songId === id) n2++;
+  return n2;
+}
+function pushBpm(song, bpm){
+  var t = todayKey();
+  if (!song.hist) song.hist = [];
+  var h = song.hist;
+  if (h.length && h[h.length - 1].d === t) h[h.length - 1].b = bpm;
+  else h.push({ d: t, b: bpm });
+  if (h.length > 60) h.splice(0, h.length - 60);
+}
+function shortDate(k){
+  var mn = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var d = parseKey(k);
+  return d.getDate() + " " + mn[d.getMonth()];
+}
+function songRingSVG(p, size){
+  var P = PAL();
+  var R = size / 2 - 5, C = 2 * Math.PI * R, m = size / 2;
+  var gid = "sr" + size + "_" + Math.round(p);
+  return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" role="img" aria-label="' + p + ' percent learned">'
+    + '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="1" y2="0">'
+    + '<stop offset="0" stop-color="' + P.a1 + '"/><stop offset="1" stop-color="' + P.a2 + '"/></linearGradient></defs>'
+    + '<circle cx="' + m + '" cy="' + m + '" r="' + R + '" fill="none" stroke="' + P.grid + '" stroke-width="5.5"/>'
+    + '<circle cx="' + m + '" cy="' + m + '" r="' + R + '" fill="none" stroke="' + (p >= 100 ? P.good : 'url(#' + gid + ')') + '" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="' + (C * Math.min(100, p) / 100).toFixed(1) + ' ' + C.toFixed(1) + '" transform="rotate(-90 ' + m + ' ' + m + ')"/>'
+    + '<text x="' + m + '" y="' + (m + (size > 62 ? 6 : 5)) + '" text-anchor="middle" font-size="' + (size > 62 ? 16 : 13.5) + '" font-weight="800" fill="' + P.ink + '">' + p + '%</text></svg>';
+}
+function bpmChartSVG(s){
+  var P = PAL();
+  var h = s.hist || [];
+  var W = 600, H = 210, padL = 40, padR = 14, padT = 18, padB = 30;
+  var iw = W - padL - padR, ih = H - padT - padB;
+  var vals = [];
+  for (var i = 0; i < h.length; i++) vals.push(h[i].b);
+  var hi = Math.max.apply(null, vals.concat([s.target || 0]));
+  var lo = Math.min.apply(null, vals);
+  hi = hi * 1.08;
+  lo = Math.max(0, lo - 8);
+  if (hi - lo < 10) hi = lo + 10;
+  function X(i){ return padL + (h.length === 1 ? iw / 2 : i * iw / (h.length - 1)); }
+  function Y(v){ return padT + ih - ((v - lo) / (hi - lo)) * ih; }
+  var out = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img" aria-label="Tempo progress over time">'
+    + '<defs><linearGradient id="bpl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="' + P.a1 + '"/><stop offset="1" stop-color="' + P.a2 + '"/></linearGradient>'
+    + '<linearGradient id="bpa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + P.a2 + '"/><stop offset="1" stop-color="' + P.a1 + '"/></linearGradient></defs>';
+  var gl = [lo, (lo + hi) / 2, hi];
+  for (var g = 0; g < gl.length; g++){
+    out += '<line x1="' + padL + '" y1="' + Y(gl[g]).toFixed(1) + '" x2="' + (W - padR) + '" y2="' + Y(gl[g]).toFixed(1) + '" stroke="' + P.grid + '" stroke-width="1.2"/>'
+      + '<text x="' + (padL - 8) + '" y="' + (Y(gl[g]) + 4).toFixed(1) + '" text-anchor="end" font-size="11" fill="' + P.axis + '">' + Math.round(gl[g]) + '</text>';
+  }
+  if (s.target > 0){
+    out += '<line x1="' + padL + '" y1="' + Y(s.target).toFixed(1) + '" x2="' + (W - padR) + '" y2="' + Y(s.target).toFixed(1) + '" stroke="' + P.good + '" stroke-width="1.8" stroke-dasharray="6 5"/>'
+      + '<text x="' + (W - padR) + '" y="' + (Y(s.target) - 7).toFixed(1) + '" text-anchor="end" font-size="11.5" font-weight="700" fill="' + P.good + '">target ' + s.target + ' bpm</text>';
+  }
+  var line = "";
+  for (var j = 0; j < h.length; j++) line += (j ? " L" : "M") + X(j).toFixed(1) + " " + Y(h[j].b).toFixed(1);
+  if (h.length > 1){
+    out += '<path d="' + line + ' L' + X(h.length - 1).toFixed(1) + ' ' + Y(lo).toFixed(1) + ' L' + X(0).toFixed(1) + ' ' + Y(lo).toFixed(1) + ' Z" fill="url(#bpa)" opacity="0.15"/>';
+  }
+  out += '<path d="' + line + '" fill="none" stroke="url(#bpl)" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>';
+  for (var k = 0; k < h.length; k++){
+    out += '<circle cx="' + X(k).toFixed(1) + '" cy="' + Y(h[k].b).toFixed(1) + '" r="4.5" fill="' + P.a2 + '" stroke="' + P.dot + '" stroke-width="2"/>';
+    if (k === 0 || k === h.length - 1 || (h.length > 4 && k === Math.floor(h.length / 2))){
+      out += '<text x="' + X(k).toFixed(1) + '" y="' + (H - 9) + '" text-anchor="middle" font-size="11" fill="' + P.axis + '">' + shortDate(h[k].d) + '</text>';
+    }
+  }
+  return out + "</svg>";
+}
+function renderSongs(){
+  var el = document.getElementById("view-songs");
+  var html = '<p class="greet disp" style="font-size:22px">Your repertoire</p>';
+  html += '<p class="datesub">Every song you are working on, with tempo progress and what is left to learn. Tap a song to open it.</p>';
+  if (!state.songs.length){
+    html += '<div class="empty">No songs yet.<br>Add the first song you are learning, then build up its sections and tempo as you go.</div>';
+  } else {
+    html += '<div class="songgrid">';
+    for (var i = 0; i < state.songs.length; i++){
+      var s = state.songs[i], p = songPct(s), c = partCounts(s.parts);
+      var tp = (s.target > 0 && s.target > s.start) ? Math.min(100, Math.round(((s.cur - s.start) / (s.target - s.start)) * 100)) : 0;
+      html += '<button type="button" class="song" onclick="openSong(\'' + s.id + '\')">'
+        + '<span class="top"><span class="ring">' + songRingSVG(p, 58) + '</span>'
+        + '<span class="meta"><b>' + esc(s.name) + '</b>'
+        + (s.artist ? '<span class="art">' + esc(s.artist) + '</span>' : '')
+        + '<span class="spill s' + (s.status || 1) + '">' + SONGSTATUS[(s.status || 1) - 1] + '</span></span></span>';
+      if (s.tempoSet && s.target > 0){
+        html += '<span class="bpmline"><span>' + s.cur + ' bpm</span>'
+          + '<span class="bpmtrack"><i style="width:' + tp + '%"></i></span>'
+          + '<span>' + s.target + '</span></span>';
+      } else if (s.tempoSet){
+        html += '<span class="bpmline"><span>' + s.cur + ' bpm</span></span>';
+      }
+      if (c.total){
+        html += '<span class="parts">';
+        for (var q = 0; q < s.parts.length; q++){
+          var st = s.parts[q].st || 0;
+          html += '<span class="part ' + (st === 2 ? "done" : st === 1 ? "work" : "") + '">' + esc(s.parts[q].n) + (st === 2 ? " \u2713" : "") + '</span>';
+        }
+        html += '</span>';
+      }
+      var mins = songMinutes(s.id);
+      html += '<span class="hint" style="display:block; margin-top:10px">'
+        + (c.total ? c.done + ' of ' + c.total + ' ' + sectionWord(c.total) + ' done' : 'No sections added yet')
+        + (mins ? ' \u00B7 ' + fmtMin(mins) + ' practiced' : '') + '</span>'
+        + '</button>';
+    }
+    html += '</div>';
+  }
+  html += '<button class="btn grad wide" onclick="openSong(null)">+ Add a song</button>';
+  html += '<p class="hint">Open a song to update its tempo, tick off sections, and add notes. The <b>Practice this today</b> button drops it into today\u2019s list so the timer and metronome work on it, and those minutes are counted against the song.</p>';
+  el.innerHTML = html;
+}
+function partsSummaryText(p){
+  var c = partCounts(p);
+  if (!c.total) return "Sections \u00B7 add your own below";
+  return "Sections \u00B7 " + c.done + " done, " + c.work + " in progress, " + c.todo + " to start";
+}
+function openSong(id){
+  var s = id ? findSong(id) : null;
+  sheetState = {
+    kind: "song",
+    id: s ? s.id : null,
+    status: s ? (s.status || 1) : 1,
+    cur: s ? s.cur : 60,
+    target: s ? s.target : 120,
+    parts: s ? JSON.parse(JSON.stringify(s.parts || [])) : [],
+    tempoTouched: s ? !!s.tempoSet : false,
+    editParts: false
+  };
+  var html = '';
+  if (s){
+    html += '<div style="display:flex; align-items:center; gap:15px; margin-bottom:4px">'
+      + '<span style="line-height:0">' + songRingSVG(songPct(s), 74) + '</span>'
+      + '<div style="flex:1; min-width:0"><h2 class="disp" style="margin:0">' + esc(s.name) + '</h2>'
+      + '<p class="sub">' + (s.artist ? esc(s.artist) : "Tap below to edit the details") + '</p>'
+      + '<p class="hint" style="margin-top:4px">' + esc(songProgressNote(s)) + '</p></div></div>';
+    var nudge = songNudge(s);
+    if (nudge) html += '<div class="nudge">' + nudge + '</div>';
+  } else {
+    html += '<h2 class="disp">Add a song</h2><p class="sub">What are you learning?</p>';
+  }
+  html += '<label>Song title</label><input id="sgName" placeholder="Hotel California" value="' + (s ? esc(s.name) : '') + '" autocomplete="off">';
+  html += '<label>Artist (optional)</label><input id="sgArtist" placeholder="Eagles" value="' + (s && s.artist ? esc(s.artist) : '') + '" autocomplete="off">';
+  html += '<label>Status <span style="text-transform:none; letter-spacing:0; font-weight:500">(Learning reaches 60%, Polishing 90%, Ready 100%)</span></label><div class="statusrow" id="sgStatus">'
+    + '<button type="button" onclick="setSongStatus(1)">Learning</button>'
+    + '<button type="button" onclick="setSongStatus(2)">Polishing</button>'
+    + '<button type="button" onclick="setSongStatus(3)">Ready</button></div>';
+  html += '<label>Tempo (set the target to 0 if you are not tracking speed yet)</label>'
+    + '<div class="bpmrow">'
+    + '<button class="step" type="button" ontouchend="stepTap(event,stepCurBpm,-1)" onclick="stepClick(stepCurBpm,-1)" aria-label="One bpm slower">&#8722;</button>'
+    + '<span class="bpmwrap"><input class="bpmin" id="sgCurVal" type="number" inputmode="numeric" min="20" max="300" step="1" value="' + sheetState.cur + '" oninput="typeSongBpm(\'cur\')" onchange="commitSongBpm(\'cur\')"><em>bpm now</em></span>'
+    + '<button class="step" type="button" ontouchend="stepTap(event,stepCurBpm,1)" onclick="stepClick(stepCurBpm,1)" aria-label="One bpm faster">+</button>'
+    + '</div>'
+    + '<div class="bpmrow" style="margin-top:12px">'
+    + '<button class="step" type="button" ontouchend="stepTap(event,stepTargetBpm,-1)" onclick="stepClick(stepTargetBpm,-1)" aria-label="Lower target by one">&#8722;</button>'
+    + '<span class="bpmwrap"><input class="bpmin" id="sgTargetVal" type="number" inputmode="numeric" min="0" max="300" step="1" value="' + sheetState.target + '" oninput="typeSongBpm(\'target\')" onchange="commitSongBpm(\'target\')"><em>bpm target</em></span>'
+    + '<button class="step" type="button" ontouchend="stepTap(event,stepTargetBpm,1)" onclick="stepClick(stepTargetBpm,1)" aria-label="Raise target by one">+</button>'
+    + '</div>'
+    + '<p class="hint">Tap either number to type it in, or nudge it one beat at a time.</p>';
+  if (s && s.tempoSet && s.hist && s.hist.length > 1){
+    html += '<div class="card" style="margin:16px 0 0; padding:14px">' + bpmChartSVG(s)
+      + '<div class="legend"><span><i style="background:linear-gradient(90deg,var(--a1),var(--a2))"></i>Your tempo</span>'
+      + (s.target > 0 ? '<span><i style="background:var(--good)"></i>Target</span>' : '') + '</div></div>';
+  } else if (s){
+    html += '<p class="hint">' + (s.tempoSet
+      ? "Update your tempo on a few different days and a progress chart will appear here."
+      : "Set a tempo above to start tracking speed for this song. Leave it alone if you are not working on speed yet.") + '</p>';
+  }
+  if (s){
+    var gained = (s.tempoSet && s.hist && s.hist.length) ? (s.cur - s.hist[0].b) : 0;
+    html += '<div class="statgrid">'
+      + '<div class="stat"><small>Tempo gained</small><b>' + (gained > 0 ? "+" : "") + gained + '</b></div>'
+      + '<div class="stat"><small>Practiced</small><b>' + fmtMin(songMinutes(s.id)) + '</b></div>'
+      + '<div class="stat"><small>Sessions</small><b>' + songSessionCount(s.id) + '</b></div></div>';
+  }
+  html += '<label class="plabel"><span id="partsLabel">' + partsSummaryText(sheetState.parts) + '</span>'
+    + '<button type="button" class="pedit" id="partsEditBtn" onclick="togglePartEdit()">Edit</button></label>'
+    + '<div class="parts" id="songParts"></div>'
+    + '<p class="hint">Sections are yours to invent: Intro, that tricky bar 32, the solo, whatever you are breaking the song into. Tap a section to move it between To do, Working, and Done.</p>';
+  html += '<label>Notes</label><textarea id="sgNote" rows="3" placeholder="Barre chord buzzes in the chorus above 90 bpm">' + (s && s.note ? esc(s.note) : '') + '</textarea>';
+  if (s){
+    html += '<button class="btn grad wide" style="margin-top:18px" onclick="practiceSong(\'' + s.id + '\')">&#9654; Practice this today</button>';
+  }
+  html += '<button class="btn ' + (s ? '' : 'grad ') + 'wide" style="margin-top:' + (s ? '8' : '18') + 'px" onclick="saveSong()">' + (s ? "Save changes" : "Add to repertoire") + '</button>';
+  if (s) html += '<button class="btn wide danger" style="margin-top:8px" onclick="deleteSong(\'' + s.id + '\')">Remove song</button>';
+  html += '<button class="btn ghost wide" onclick="closeSheet()">Cancel</button>';
+  openSheet(html);
+  paintSongStatus();
+  renderParts();
+}
+function paintSongStatus(){
+  var box = document.getElementById("sgStatus");
+  if (!box) return;
+  for (var i = 0; i < box.children.length; i++){
+    box.children[i].className = (i + 1 === sheetState.status) ? "on s" + (i + 1) : "";
+  }
+}
+function setSongStatus(nStatus){
+  sheetState.status = nStatus;
+  paintSongStatus();
+}
+function clampNum(v, lo, hi, dflt){
+  var x = parseInt(v, 10);
+  if (isNaN(x)) x = dflt;
+  if (x < lo) x = lo;
+  if (x > hi) x = hi;
+  return x;
+}
+function stepCurBpm(d){
+  sheetState.tempoTouched = true;
+  var el = document.getElementById("sgCurVal");
+  var base = el ? clampNum(el.value, 20, 300, sheetState.cur || 60) : (sheetState.cur || 60);
+  var v = clampNum(base + d, 20, 300, 60);
+  sheetState.cur = v;
+  if (el) el.value = v;
+}
+function stepTargetBpm(d){
+  sheetState.tempoTouched = true;
+  var el = document.getElementById("sgTargetVal");
+  var base = el ? clampNum(el.value, 0, 300, sheetState.target || 0) : (sheetState.target || 0);
+  var v = clampNum(base + d, 0, 300, 0);
+  sheetState.target = v;
+  if (el) el.value = v;
+}
+/* Typing: accept the number live so half-typed values are not fought with,
+   then clamp once the field is committed (blur or Enter). */
+function typeSongBpm(which){
+  sheetState.tempoTouched = true;
+  var el = document.getElementById(which === "cur" ? "sgCurVal" : "sgTargetVal");
+  if (!el) return;
+  var x = parseInt(el.value, 10);
+  if (!isNaN(x)) sheetState[which] = x;
+}
+function commitSongBpm(which){
+  var isCur = which === "cur";
+  var el = document.getElementById(isCur ? "sgCurVal" : "sgTargetVal");
+  if (!el) return;
+  var v = clampNum(el.value, isCur ? 20 : 0, 300, isCur ? 60 : 0);
+  sheetState[which] = v;
+  el.value = v;
+}
+function togglePartEdit(){
+  sheetState.editParts = !sheetState.editParts;
+  var b = document.getElementById("partsEditBtn");
+  if (b) b.textContent = sheetState.editParts ? "Done" : "Edit";
+  renderParts();
+}
+function renderParts(){
+  var box = document.getElementById("songParts");
+  if (!box) return;
+  var p = sheetState.parts || [];
+  var h = "";
+  for (var i = 0; i < p.length; i++){
+    var st = p[i].st || 0;
+    var cls = st === 2 ? "done" : st === 1 ? "work" : "";
+    if (sheetState.editParts){
+      h += '<span class="part ' + cls + '">'
+        + '<button type="button" style="color:inherit; font:inherit; font-weight:700" onclick="renamePart(' + i + ')">' + esc(p[i].n) + '</button>'
+        + '<button type="button" class="px" onclick="removePart(' + i + ')" aria-label="Remove section">&#10005;</button></span>';
+    } else {
+      h += '<button type="button" class="part ' + cls + '" onclick="cyclePart(' + i + ')">'
+        + esc(p[i].n) + ' \u00B7 ' + PSTATE[st] + '</button>';
+    }
+  }
+  h += '<button type="button" class="part newpart" onclick="addPartInput()">+ Add section</button>';
+  box.innerHTML = h;
+  var lab = document.getElementById("partsLabel");
+  if (lab) lab.textContent = partsSummaryText(p);
+}
+function cyclePart(i){
+  var p = sheetState.parts[i];
+  if (!p) return;
+  p.st = ((p.st || 0) + 1) % 3;
+  renderParts();
+}
+function removePart(i){
+  sheetState.parts.splice(i, 1);
+  renderParts();
+}
+function partInputRow(box, startValue, onDone){
+  var wrap = document.createElement("div");
+  wrap.style.cssText = "display:flex; gap:8px; width:100%;";
+  var inp = document.createElement("input");
+  inp.placeholder = "Section name, for example Intro";
+  inp.maxLength = 24;
+  inp.value = startValue || "";
+  var ok = document.createElement("button");
+  ok.type = "button";
+  ok.className = "btn grad";
+  ok.textContent = startValue ? "Save" : "Add";
+  ok.onclick = function () {
+    var v = (inp.value || "").trim();
+    if (!v){ toast("Type a section name first"); return; }
+    onDone(v.slice(0, 24));
+  };
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "Enter"){ e.preventDefault(); ok.onclick(); }
+  });
+  box.appendChild(wrap);
+  wrap.appendChild(inp);
+  wrap.appendChild(ok);
+  inp.focus();
+  if (startValue) inp.select();
+}
+function addPartInput(){
+  var box = document.getElementById("songParts");
+  if (!box) return;
+  partInputRow(box, "", function (v) {
+    sheetState.parts.push({ n: v, st: 0 });
+    renderParts();
+  });
+}
+function renamePart(i){
+  var box = document.getElementById("songParts");
+  if (!box) return;
+  box.innerHTML = "";
+  partInputRow(box, sheetState.parts[i].n, function (v) {
+    sheetState.parts[i].n = v;
+    renderParts();
+  });
+}
+function saveSong(){
+  var name = (document.getElementById("sgName").value || "").trim();
+  if (!name){ toast("Give the song a name first"); return; }
+  var artist = (document.getElementById("sgArtist").value || "").trim();
+  var note = (document.getElementById("sgNote").value || "").trim();
+  var curEl = document.getElementById("sgCurVal");
+  var tgtEl = document.getElementById("sgTargetVal");
+  if (curEl) sheetState.cur = clampNum(curEl.value, 20, 300, sheetState.cur || 60);
+  if (tgtEl) sheetState.target = clampNum(tgtEl.value, 0, 300, sheetState.target || 0);
+  if (sheetState.id){
+    var s = findSong(sheetState.id);
+    if (s){
+      s.name = name;
+      s.artist = artist;
+      s.status = sheetState.status;
+      s.target = sheetState.target;
+      s.tempoSet = !!sheetState.tempoTouched;
+      s.parts = sheetState.parts;
+      s.note = note;
+      if (s.cur !== sheetState.cur){
+        s.cur = sheetState.cur;
+        pushBpm(s, s.cur);
+      }
+      if (typeof s.start !== "number") s.start = s.cur;
+    }
+    toast("Song updated");
+  } else {
+    var ns = {
+      id: uid(), name: name, artist: artist,
+      status: sheetState.status,
+      cur: sheetState.cur, target: sheetState.target, start: sheetState.cur,
+      tempoSet: !!sheetState.tempoTouched,
+      parts: sheetState.parts, note: note,
+      hist: [{ d: todayKey(), b: sheetState.cur }],
+      created: todayKey()
+    };
+    state.songs.push(ns);
+    toast("Added to your repertoire \uD83C\uDFB6");
+  }
+  save(); closeSheet(); render();
+}
+function deleteSong(id){
+  var s = findSong(id);
+  if (!s) return;
+  askConfirm("Remove \u201C" + s.name + "\u201D from your repertoire? Practice minutes already logged stay in your history.", function () {
+    for (var i = 0; i < state.songs.length; i++){
+      if (state.songs[i].id === id){ state.songs.splice(i, 1); break; }
+    }
+    save(); closeSheet(); render();
+    toast("Song removed");
+  }, "Remove");
+}
+function practiceSong(id){
+  var s = findSong(id);
+  if (!s) return;
+  for (var i = 0; i < state.extras.length; i++){
+    if (state.extras[i].songId === id && state.extras[i].date === todayKey()){
+      closeSheet(); show("today");
+      toast("Already in today\u2019s list");
+      return;
+    }
+  }
+  state.extras.push({
+    id: uid(), name: s.name, cat: defCat("songs"), min: 10,
+    date: todayKey(), songId: s.id
+  });
+  save(); closeSheet(); show("today");
+  toast("\u201C" + s.name + "\u201D added to today");
+}
+
 function splitMasonryDom(el){
   var m = el.querySelector('.masonry');
   if (!m) return;
@@ -1802,10 +2366,12 @@ function saveLog(){
     toast("Session updated");
     return;
   }
+  var srcItem = sheetState.itemId ? findWorkItem(sheetState.itemId) : null;
   state.sessions.push({
     id: uid(), date: date, itemId: sheetState.itemId, name: name,
     cat: sheetState.cat, min: mins, mood: sheetState.mood,
     note: note,
+    songId: (srcItem && srcItem.songId) ? srcItem.songId : null,
     ts: Date.now()
   });
   save(); closeSheet(); render();
@@ -1817,7 +2383,8 @@ function quickLog(itemId){
   if (!it) return;
   state.sessions.push({
     id: uid(), date: todayKey(), itemId: it.id, name: it.name,
-    cat: it.cat, min: it.min, mood: 3, note: "", ts: Date.now()
+    cat: it.cat, min: it.min, mood: 3, note: "",
+    songId: it.songId || null, ts: Date.now()
   });
   save(); render();
   maybeCelebrate();
@@ -2141,12 +2708,34 @@ function setBpm(v){
   if (n < 40) n = 40; if (n > 240) n = 240;
   metroBpm = n;
   var val = document.getElementById("mBpmVal");
-  if (val) val.innerHTML = n + '<em>bpm</em>';
+  if (val && String(val.value) !== String(n)) val.value = n;
   var sl = document.getElementById("mBpm");
   if (sl && String(sl.value) !== String(n)) sl.value = n;
 }
+/* Typing a tempo: accept it live while it is in range, so a running click
+   retargets straight away, then clamp when the field is committed. */
+function typeBpm(){
+  var el = document.getElementById("mBpmVal");
+  if (!el) return;
+  var n = parseInt(el.value, 10);
+  if (isNaN(n) || n < 40 || n > 240) return;
+  metroBpm = n;
+  var sl = document.getElementById("mBpm");
+  if (sl) sl.value = n;
+}
+function commitBpm(){
+  var el = document.getElementById("mBpmVal");
+  if (!el) return;
+  var n = parseInt(el.value, 10);
+  if (isNaN(n)) n = metroBpm;
+  setBpm(n);
+  el.value = metroBpm;
+}
 function stepBpm(d){
-  setBpm(metroBpm + d);
+  var el = document.getElementById("mBpmVal");
+  var base = el ? parseInt(el.value, 10) : metroBpm;
+  if (isNaN(base)) base = metroBpm;
+  setBpm(base + d);
 }
 function closeTimer(){
   stopMetro();
@@ -2162,11 +2751,11 @@ function renderTimerSheet(){
     + '</div>'
     + '<div class="metro">'
     + '<div class="mlabel"><span>Metronome <i class="beat" id="mBeat"></i></span>'
-    + '<span class="mbpm" id="mBpmVal">' + metroBpm + '<em>bpm</em></span></div>'
+    + '<span class="mbpmwrap"><input class="mbpmin" id="mBpmVal" type="number" inputmode="numeric" min="40" max="240" step="1" value="' + metroBpm + '" oninput="typeBpm()" onchange="commitBpm()"><em>bpm</em></span></div>'
     + '<div class="mrow">'
-    + '<button class="mstep" type="button" onclick="stepBpm(-5)" aria-label="Slower">&#8722;</button>'
+    + '<button class="mstep" type="button" ontouchend="stepTap(event,stepBpm,-1)" onclick="stepClick(stepBpm,-1)" aria-label="One bpm slower">&#8722;</button>'
     + '<input type="range" id="mBpm" min="40" max="240" step="1" value="' + metroBpm + '" oninput="setBpm(this.value)">'
-    + '<button class="mstep" type="button" onclick="stepBpm(5)" aria-label="Faster">+</button>'
+    + '<button class="mstep" type="button" ontouchend="stepTap(event,stepBpm,1)" onclick="stepClick(stepBpm,1)" aria-label="One bpm faster">+</button>'
     + '</div>'
     + '<button class="btn mplay' + (metroOn ? ' on' : '') + '" id="mPlay" type="button" onclick="toggleMetro()">' + (metroOn ? '&#9632; Stop' : '&#9654; Start metronome') + '</button>'
     + '</div>'
@@ -2226,11 +2815,11 @@ function timerCelebrate(){
     + '</div>'
     + '<div class="metro">'
     + '<div class="mlabel"><span>Metronome <i class="beat" id="mBeat"></i></span>'
-    + '<span class="mbpm" id="mBpmVal">' + metroBpm + '<em>bpm</em></span></div>'
+    + '<span class="mbpmwrap"><input class="mbpmin" id="mBpmVal" type="number" inputmode="numeric" min="40" max="240" step="1" value="' + metroBpm + '" oninput="typeBpm()" onchange="commitBpm()"><em>bpm</em></span></div>'
     + '<div class="mrow">'
-    + '<button class="mstep" type="button" onclick="stepBpm(-5)" aria-label="Slower">&#8722;</button>'
+    + '<button class="mstep" type="button" ontouchend="stepTap(event,stepBpm,-1)" onclick="stepClick(stepBpm,-1)" aria-label="One bpm slower">&#8722;</button>'
     + '<input type="range" id="mBpm" min="40" max="240" step="1" value="' + metroBpm + '" oninput="setBpm(this.value)">'
-    + '<button class="mstep" type="button" onclick="stepBpm(5)" aria-label="Faster">+</button>'
+    + '<button class="mstep" type="button" ontouchend="stepTap(event,stepBpm,1)" onclick="stepClick(stepBpm,1)" aria-label="One bpm faster">+</button>'
     + '</div>'
     + '<button class="btn mplay' + (metroOn ? ' on' : '') + '" id="mPlay" type="button" onclick="toggleMetro()">' + (metroOn ? '&#9632; Stop' : '&#9654; Start metronome') + '</button>'
     + '</div>'
@@ -2339,8 +2928,10 @@ function importJSON(input){
       if (!s.catArchive) s.catArchive = {};
       ensureDefaultCat(s, "sight", "Sight Reading", "#64B5D9");
       ensureDefaultCat(s, "harmony", "Harmony", "#8AC926");
+      ensureDefaultCat(s, "finger", "Fingerstyle", "#E06C75");
       if (!s.extras) s.extras = [];
       s.extras = s.extras.filter(function (e) { return e.date === todayKey(); });
+      if (!s.songs) s.songs = [];
       state = s;
       if (state.settings && state.settings.theme) applyTheme(state.settings.theme);
       save(); render();
@@ -2360,7 +2951,8 @@ function summaryText(){
   var total = 0;
   for (var i = 0; i < state.sessions.length; i++) total += state.sessions[i].min;
   var ct = catTotals(state.sessions);
-  /* WhatsApp renders *text* as bold, giving a clean professional look */
+  /* WhatsApp renders *text* as bold and turns "- " lines into real bullets.
+     On older versions the dash simply shows as a dash, so it still reads well. */
   var lines = [
     "*Practice summary for " + state.profile.name + ":*",
     "",
@@ -2368,13 +2960,54 @@ function summaryText(){
     "",
     "*Current streak:* " + st.current + " " + dayWord(st.current) + " (best " + st.best + ")",
     "",
-    "*All time:* " + fmtMin(total) + " across " + state.sessions.length + (state.sessions.length === 1 ? " session" : " sessions"),
-    "",
-    "*By category:*"
+    "*All time:* " + fmtMin(total) + " across " + state.sessions.length + (state.sessions.length === 1 ? " session" : " sessions")
   ];
   var keys = Object.keys(ct).sort(function (a, b) { return ct[b] - ct[a]; });
-  for (var k = 0; k < keys.length; k++) lines.push("  *" + cat(keys[k]).name + ":* " + fmtMin(ct[keys[k]]));
+  if (keys.length){
+    lines.push("");
+    lines.push("*By category:*");
+    for (var k = 0; k < keys.length; k++) lines.push("- *" + cat(keys[k]).name + ":* " + fmtMin(ct[keys[k]]));
+  }
+
+  /* Repertoire: what they are learning, how fast, and what is left.
+     Sorted so the songs still needing work come first. */
+  var songs = (state.songs || []).slice();
+  if (songs.length){
+    var ready = 0;
+    for (var r = 0; r < songs.length; r++) if ((songs[r].status || 1) === 3) ready++;
+    songs.sort(function (a, b) {
+      var sa = a.status || 1, sb = b.status || 1;
+      if (sa !== sb) return sa - sb;
+      return songPct(b) - songPct(a);
+    });
+    lines.push("");
+    lines.push("*Repertoire:* " + songs.length + (songs.length === 1 ? " song" : " songs")
+      + (ready ? " (" + ready + " performance ready)" : ""));
+    var cap = Math.min(songs.length, 12);
+    for (var q = 0; q < cap; q++) lines.push(songSummaryLine(songs[q]));
+    if (songs.length > cap) lines.push("- ...and " + (songs.length - cap) + " more");
+  }
   return lines.join("\n");
+}
+function songSummaryLine(s){
+  var bits = [];
+  bits.push("*" + s.name + "*" + (s.artist ? " (" + s.artist + ")" : ""));
+  bits.push(SONGSTATUS_SHORT[(s.status || 1) - 1]);
+  bits.push(songPct(s) + "%");
+  if (s.tempoSet && s.target > 0) bits.push(s.cur + "/" + s.target + " bpm");
+  else if (s.tempoSet && s.cur) bits.push(s.cur + " bpm");
+  var c = partCounts(s.parts);
+  var allDone = c.total > 0 && c.done === c.total;
+  if (c.total){
+    bits.push(allDone
+      ? (c.total === 1 ? "1 section done" : "all " + c.total + " sections done")
+      : c.done + " of " + c.total + " " + sectionWord(c.total));
+  }
+  var nx = allDone ? null : songNextPart(s);
+  if (nx) bits.push("next: " + nx);
+  var mins = songMinutes(s.id);
+  if (mins) bits.push(fmtMin(mins) + " practiced");
+  return "- " + bits.join(" \u00B7 ");
 }
 function copySummary(){
   var txt = summaryText();
