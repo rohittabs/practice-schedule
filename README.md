@@ -22,15 +22,16 @@ Cadence is a web app that lives in a single HTML file. Open a link in a browser,
 | **Today view** | See only what is planned for today, with a progress bar and streak counter |
 | **Log a session** | Tapping the tick opens a quick sheet (target prefilled, editable) with a mood picker and an optional note, then saves it. Tapping an already-logged green tick undoes it instantly |
 | **Timer** | Built-in stopwatch that auto-stops the moment the target time is reached, celebrates, and offers **Finish and log** or **Continue practicing**. Continuing keeps the clock running and logs the real elapsed time whenever it is finished |
-| **Metronome** | A simple BPM-only metronome (40 to 240 bpm) appears inside the practice timer. One continuous click, no accents, no beat or time-signature settings. Drag the slider or use the plus/minus buttons to change tempo |
+| **Metronome** | A simple BPM-only metronome (40 to 240 bpm) appears inside the practice timer. One continuous click, no accents, no beat or time-signature settings. Tap the number to type an exact tempo, or nudge it one beat at a time with the plus and minus buttons |
 | **Extra practice** | Log anything beyond the plan for today. It gets its own name, category, and target minutes, shows inline in the Today list with an EXTRA tag, and gets its own timer and tick, just like a routine item. Removing an extra also removes any minutes already logged for it that day |
-| **Categories** | 11 built-in color categories. Add, rename, recolor, or delete any of them from the Plan tab. Deleting a category that a plan item still uses is blocked until that item is reassigned |
+| **Repertoire (Songs)** | A dedicated tab for tracking songs. Each song has a stage (Learning, Polishing, Performance ready), a tempo goal you build up over time with a growth chart, and a checklist of sections that the player defines from scratch, nothing is assumed. A **Practice this today** button sends the song straight into today's list with its own timer and metronome |
+| **Categories** | 12 built-in color categories, including Fingerstyle. Add, rename, recolor, or delete any of them from the Plan tab. Deleting a category that a plan item still uses is blocked until that item is reassigned |
 | **Progress charts** | 30-day line chart, 8-week bar chart, category breakdown, 12-week heatmap |
 | **Streak tracking** | Daily streak with a grace-day system so one missed day does not break a long streak |
 | **Weekly goal ring** | Visual ring showing progress toward the weekly minute target |
 | **9 achievement badges** | Unlockable badges for milestones like first session, 7-day streak, 10 hours total, and more |
 | **Day-complete celebration** | Confetti and a trophy card appear once the whole day's plan and any extras are finished |
-| **Copy summary** | One-tap copy of a WhatsApp-formatted bold summary, ready to paste and send anywhere |
+| **Copy summary** | One-tap copy of a WhatsApp-formatted summary with bold text and real bullet lists, covering practice minutes, streaks, category breakdown, and a full repertoire report, ready to paste and send anywhere |
 | **Appearance** | A dedicated Light, Dark, and System picker in the More tab. System follows the device's own setting automatically. Opens in Light by default until changed |
 | **Backup and restore** | Download a JSON rescue file. Restore it on any device |
 | **Swipe actions** | Swipe left (touch) or drag left (mouse) to edit, undo, or remove any row |
@@ -39,9 +40,29 @@ Cadence is a web app that lives in a single HTML file. Open a link in a browser,
 
 ---
 
-## The 11 default categories
+## Repertoire, in detail
 
-Warm-up, Chords, Scales, Strumming, Songs, Technique, Theory, Ear training, Exam prep, Sight Reading, Harmony
+The Songs tab is the biggest addition in this release, and it is worth explaining how it thinks.
+
+**Sections are never assumed.** A new song starts with zero sections. There is no automatic Intro, Verse, or Chorus. The player adds exactly the sections that make sense for that song, whether that is "Intro", "the solo", or "bar 32 where the stretch is". Each section can be renamed or removed at any time, and tapping one cycles it through To do, Working, and Done.
+
+**Tempo tracking is optional and only counts once it is actually used.** A song's current and target tempo default to placeholder numbers, but they are not treated as real data until the player deliberately changes one. Once touched, every update is timestamped, building a growth chart with a dashed line marking the target speed. This means a song nobody has timed yet never reports a fake tempo to anyone.
+
+**Progress is a stage the player controls, filled in by measurable work.** The percentage ring is not a blind average of ticked boxes. Instead, each stage sets a ceiling the ring cannot cross until the player promotes the song themselves:
+
+- **Learning** fills from 0% up to 60%
+- **Polishing** fills from 60% up to 90%
+- **Performance ready** is always 100%
+
+So finishing every section you have added to a song while it is still in Polishing shows 90%, not 100%, because the player has not yet said the song is ready to perform. A short note under the song's title always explains the number in plain words, for example "Polishing stage, 1 of 1 section done, tempo not tracked", and if all tracked work is finished but the stage has not been promoted, a message explains exactly what to do next.
+
+**Practicing a song uses the existing engine.** The **Practice this today** button adds the song to today's list as extra practice, so the same timer, metronome, and minute logging that everything else in Cadence uses works for repertoire too, and those minutes are automatically counted toward that song's practiced time and session count.
+
+---
+
+## The 12 default categories
+
+Warm-up, Chords, Scales, Strumming, Songs, Technique, Theory, Ear training, Exam prep, Sight Reading, Harmony, Fingerstyle
 
 New categories can be added at any time, and any unused category can be renamed, recolored, or deleted.
 
@@ -172,10 +193,20 @@ The plan starts completely empty, on purpose. Build it before practicing.
 - See everything planned for today with a progress bar at the top
 - Tap the **tick circle** to open a quick log sheet: minutes prefilled to the target, a mood picker, and an optional note. Save it to log. Tap an already-green tick again to undo instantly
 - Tap the **clock icon** to use the built-in timer. It stops automatically the moment the target is reached, then offers **Finish and log** or **Continue practicing**
-- Inside the timer, a **metronome** is available: set a tempo with the slider or the plus/minus buttons, and start or stop a single continuous click
+- Inside the timer, a **metronome** is available: tap the number to type an exact tempo, or use the plus and minus buttons to nudge it one beat at a time
 - Tap **+ Log extra practice** for anything not on the plan. It gets added to today's list with an EXTRA tag, its own target, and its own timer
 - Swipe any row left (or drag with the mouse on a laptop) to reveal **Edit**, **Undo**, or **Remove** buttons
 - When everything for the day, including any extras, is finished, a confetti celebration appears
+
+### The Songs tab
+
+- Tap **+ Add a song** and give it a name and, optionally, an artist
+- Choose a stage: Learning, Polishing, or Performance ready
+- Tap the tempo numbers to type them in, or use the plus and minus buttons to nudge by one beat. Leave the target at 0 if speed is not being tracked yet
+- Add sections with **+ Add section**, name them however makes sense, and tap them to cycle through To do, Working, and Done
+- Use **Edit** next to the sections heading to rename or remove any section
+- Tap **Practice this today** to send the song into today's practice list
+- Open any song to see its tempo growth chart once a few readings exist, plus how many minutes and sessions have gone into it
 
 ### The Progress tab
 
@@ -189,7 +220,7 @@ The plan starts completely empty, on purpose. Build it before practicing.
 - **Appearance**: choose Light, Dark, or System. System follows the device's own light/dark setting automatically
 - **Download backup file**: saves a rescue copy as a JSON file. Doing this regularly is a good habit
 - **Restore from backup**: brings everything back after a new device or accidental data loss
-- **Copy summary**: copies a formatted WhatsApp report with bold headings, ready to paste and send
+- **Copy summary**: copies a formatted WhatsApp report with bold headings, bullet lists, and a full repertoire section, ready to paste and send
 - **Session history**: browse, edit, or delete any past session. Deleting recalculates all totals
 - **Profile**: edit name and instrument, or erase all data
 
@@ -227,6 +258,9 @@ No, the app is designed for one profile per device. Each device keeps its own se
 **How does Appearance: System work?**
 It checks the device's own light or dark mode setting each time the app opens, and matches it automatically. Choosing Light or Dark instead locks the app to that look regardless of the device setting.
 
+**Why does a song show less than 100% even though every section is done?**
+Because a stage caps how high the progress ring can go until the song is promoted. Learning caps at 60%, Polishing at 90%. A note under the song's title always explains the current number, and once all tracked work is finished, a message appears explaining that moving the song to the next stage will raise it.
+
 **Does the layout work on iPad and laptops?**
 Yes. On any screen 760 pixels wide or larger, in either orientation, the app switches to a full-width, multi-column layout automatically. Phones stay single-column.
 
@@ -234,21 +268,33 @@ Yes. On any screen 760 pixels wide or larger, in either orientation, the app swi
 
 ## Technical details
 
-- Single self-contained HTML file, roughly 250 KB
+- Single self-contained HTML file, roughly 285 KB
 - No external dependencies, no frameworks, no build process
 - All charts are hand-drawn SVG, no charting libraries
 - The metronome uses the Web Audio API for precise timing, with no audio files
 - Every confirmation dialog (delete, erase, remove) is built into the app itself rather than relying on the browser's native popups, so it works reliably even inside restrictive webviews and previews
 - Data stored in the browser's localStorage
 - Works as a Progressive Web App (PWA): installable on all major platforms
-- Tested with 195 automated tests (46 logic tests, 149 end-to-end tests)
+- Tested with 286 automated tests (46 logic tests, 240 end-to-end tests)
 - Compatible with Chrome, Edge, Safari, and Firefox on all platforms
 
 ---
 
 ## Version history
 
-### v1.0 — current release
+### v2.0 — current release
+- Added the **Repertoire (Songs)** tab: track songs with a tempo growth chart, user-defined sections, notes, and a staged progress model (Learning, Polishing, Performance ready) where the stage a player chooses caps the ring so nothing is marked finished until the player says so
+- The teacher summary now includes a full repertoire report, sorted so songs needing work appear first, using WhatsApp's real bullet-list formatting
+- Added a 12th default category, Fingerstyle
+- Metronome and song tempo controls now step one beat at a time and accept a typed number directly, instead of jumping in fives
+- Fixed a color variable that left "Polishing" status pills and "Working" section chips invisible in some cases
+- Fixed the day timer's "Finish and log" not completing an item when tapped before the timer was started
+- Fixed the More tab's action buttons becoming unclickable inside the wide-screen layout
+- Fixed the practice data becoming invisible inside file previews and some restricted webviews by declaring the app's color scheme explicitly
+- Replaced every native browser confirmation popup with one built into the app, since native popups are silently blocked in some webviews
+- Adaptive layout now stretches to fill tablets and laptops in any orientation instead of floating in a narrow centered column
+
+### v1.0
 First public release under the Cadence name. Full practice planning, extra-practice logging, built-in timer with metronome, achievement badges, progress charts, appearance modes, backup and restore, and a fully adaptive layout for phones, tablets, and laptops.
 
 ---
