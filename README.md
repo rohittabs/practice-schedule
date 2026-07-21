@@ -42,7 +42,7 @@ Cadence is a web app that lives in a single HTML file. Open a link in a browser,
 
 ## Repertoire, in detail
 
-The Songs tab is the biggest addition in this release, and it is worth explaining how it thinks.
+The Songs tab is the biggest addition since v1.0, and it is worth explaining how it thinks.
 
 **Sections are never assumed.** A new song starts with zero sections. There is no automatic Intro, Verse, or Chorus. The player adds exactly the sections that make sense for that song, whether that is "Intro", "the solo", or "bar 32 where the stretch is". Each section can be renamed or removed at any time, and tapping one cycles it through To do, Working, and Done.
 
@@ -162,15 +162,9 @@ Bookmarking works in any browser: press **Ctrl + D** for a quick shortcut withou
 
 Bookmarking works too: press **Cmd + D** in either browser for a quick shortcut.
 
-### Any other device with a modern browser
-
-The link above works in any browser released in the last several years, including Chromebooks, Linux desktops, and smart displays with a browser. Installing as an app may not be available everywhere, but the app itself works normally, and bookmarking always works as a fallback.
-
 ---
 
-## How to use the app
-
-### First time setup
+## First run
 
 1. Type a name
 2. Choose an instrument: Guitar or Ukulele
@@ -268,21 +262,21 @@ Yes. On any screen 760 pixels wide or larger, in either orientation, the app swi
 
 ## Technical details
 
-- Single self-contained HTML file, roughly 285 KB
+- Single self-contained HTML file, roughly 354 KB
 - No external dependencies, no frameworks, no build process
 - All charts are hand-drawn SVG, no charting libraries
 - The metronome uses the Web Audio API for precise timing, with no audio files
 - Every confirmation dialog (delete, erase, remove) is built into the app itself rather than relying on the browser's native popups, so it works reliably even inside restrictive webviews and previews
 - Data stored in the browser's localStorage
 - Works as a Progressive Web App (PWA): installable on all major platforms
-- Tested with 286 automated tests (46 logic tests, 240 end-to-end tests)
 - Compatible with Chrome, Edge, Safari, and Firefox on all platforms
 
 ---
 
 ## Version history
 
-### v2.0 — current release
+### v2.0 (current release)
+- Full visual redesign: refreshed color palette (a pink-to-purple gradient runs through the header, buttons, and progress bars), softer cards, and updated typography throughout every tab
 - Added the **Repertoire (Songs)** tab: track songs with a tempo growth chart, user-defined sections, notes, and a staged progress model (Learning, Polishing, Performance ready) where the stage a player chooses caps the ring so nothing is marked finished until the player says so
 - The teacher summary now includes a full repertoire report, sorted so songs needing work appear first, using WhatsApp's real bullet-list formatting
 - Added a 12th default category, Fingerstyle
